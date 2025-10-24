@@ -1,83 +1,107 @@
 :root{
-  --bg:#ffffff;
-  --muted:#6b6b6b;
-  --accent:#1C1917;
-  --sidebar:#f6f6f6;
-  --border:#1C1917;
-  --content-width:900px;
-  --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Color tokens aligned with Tooplate Neural look */
+  --primary: #00ffff;
+  --secondary: #ff00ff;
+  --accent: #ffff00;
+  --bg-dark: #0a0a0a;
+  --bg-glass: rgba(255,255,255,0.03);
+  --text-primary: #e9fefc;
+  --muted: #a8b0b2;
+  --card-border: rgba(255,255,255,0.06);
+  --content-width: 1100px;
+  --font-sans: 'Exo 2', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'Audiowide', monospace;
 }
 
+/* Base */
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
   margin:0;
   font-family:var(--font-sans);
-  background:var(--bg);
-  color:#111;
-  line-height:1.5;
+  background: linear-gradient(180deg, #060606 0%, var(--bg-dark) 100%);
+  color:var(--text-primary);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
 }
 
-.container{max-width:1200px;margin:0 auto;padding:0 16px;}
+/* Container */
+.container{max-width:var(--content-width);margin:0 auto;padding:0 18px}
 
+/* Header in wiki pages — visually match neural theme */
 .site-header{
-  border-bottom:1px solid var(--border);
-  background:#fafafa;
+  border-bottom:1px solid rgba(0,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  padding: 14px 0;
+  position: relative;
+  z-index: 10;
 }
 .site-header .container{
   display:flex;
   gap:16px;
   align-items:center;
-  padding:14px 16px;
 }
-.site-header h1{margin:0;font-size:50px}
-.site-header h1 a{color:var(--accent);text-decoration:none}
+.site-header h1{margin:0;font-size:28px;color:var(--primary);font-family:var(--font-mono);letter-spacing:2px}
+.site-header h1 a{color:var(--primary);text-decoration:none}
+
+/* Search */
 .site-header input[type="search"]{
   margin-left:auto;
   padding:8px 10px;
-  border:1px solid var(--border);
-  border-radius:6px;
+  border:1px solid var(--card-border);
+  border-radius:8px;
   width:260px;
+  background: rgba(255,255,255,0.02);
+  color:var(--text-primary);
 }
 
-/* layout */
+/* Layout */
 .main-grid{
   display:grid;
-  grid-template-columns: 280px 1fr;
-  gap:24px;
-  padding:20px 16px 60px;
+  grid-template-columns: 300px 1fr;
+  gap:30px;
+  padding:26px 18px 80px;
+  max-width:var(--content-width);
+  margin: 0 auto;
 }
 
-/* sidebar */
+/* Sidebar (glass card style like Tooplate) */
 .sidebar{
-  background:var(--sidebar);
-  border:1px solid var(--border);
-  padding:12px;
-  border-radius:6px;
-  height:calc(100vh - 140px);
+  background: var(--bg-glass);
+  border:1px solid var(--card-border);
+  padding:16px;
+  border-radius:14px;
+  height: calc(100vh - 200px);
   overflow:auto;
+  box-shadow: 0 8px 30px rgba(0,255,255,0.03);
 }
-.sidebar h2{margin:6px 0 10px;font-size:16px}
+.sidebar h2{margin:6px 0 12px;font-size:14px;color:var(--text-primary);letter-spacing:1px}
 .sidebar ul{list-style:none;padding:0;margin:0}
-.sidebar li{margin:6px 0}
-.sidebar a{color:#2AA63E; text-decoration:none}
-.sidebar a:hover{text-decoration:underline}
+.sidebar li{margin:8px 0}
+.sidebar a{color:var(--text-primary); text-decoration:none; opacity:0.95; display:inline-block}
+.sidebar a[data-page] { color: var(--primary); font-weight:700; }
+.sidebar a:hover{text-decoration:underline; color:var(--secondary)}
 .categories{margin-top:18px}
 .sidebar-foot{margin-top:18px;color:var(--muted);font-size:13px}
+
+/* Category toggle button style */
 .category-toggle{
   display:flex;
   align-items:center;
   justify-content:space-between;
   width:100%;
-  padding:6px 8px;
+  padding:8px 10px;
   background:transparent;
   border:none;
   cursor:pointer;
   font-weight:700;
-  color:var(--accent);
+  color:var(--text-primary);
   text-align:left;
+  border-radius:8px;
 }
 .category-toggle:hover, .category-toggle:focus{
-  background:rgba(0,0,0,0.02);
+  background:rgba(0,255,255,0.02);
   outline:none;
 }
 .cat-toggle-icon{
@@ -85,62 +109,52 @@ body{
   transition: transform .18s ease;
   color:var(--muted);
 }
-/* rotate icon when expanded (we toggle class .open in JS) */
-.category-toggle.open .cat-toggle-icon{
-  transform:rotate(180deg);
-}
+.category-toggle.open .cat-toggle-icon{ transform:rotate(180deg); }
 
 /* Sublist */
-.category-sublist{
-  list-style:none;
-  margin:8px 0 12px 10px;
-  padding:0;
-}
+.category-sublist{ list-style:none; margin:8px 0 12px 10px; padding:0; }
 .category-sublist li{ margin:6px 0; }
 
-/* Hidden via attribute [hidden] */
+/* Hidden via [hidden] attribute */
 .category-sublist[hidden]{ display:none !important; }
 
-/* Small screen tweaks */
-@media (max-width:900px){
-  .category-sublist{ margin-left:6px; }
-}
-/* content */
+/* Content area (card) */
 .content{
-  background:#F3F4F6;
-  border:1px solid var(--border);
-  padding:20px;
-  border-radius:6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid var(--card-border);
+  padding:22px;
+  border-radius:14px;
   min-height:60vh;
+  color:var(--text-primary);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02);
 }
+.content h1{margin-top:0;font-family:var(--font-mono);letter-spacing:1px}
+.content img{max-width:100%;border-radius:8px}
 
-.content h1{margin-top:0}
-.content img{max-width:100%}
-
-/* Infobox (estilo wiki) */
+/* Infobox */
 .infobox{
   float:right;
-  width:300px;
-  border:1px solid var(--border);
-  background:#fbfbfb;
-  padding:10px;
+  width:280px;
+  border:1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(255,255,255,0.01));
+  padding:12px;
   margin:0 0 12px 12px;
   font-size:14px;
-  border-radius:4px;
+  border-radius:8px;
+  color:var(--text-primary);
 }
-.infobox .title{font-weight:700;text-align:center;background:#f0f0f0;padding:8px;margin:-10px -10px 10px -10px;border-bottom:1px solid var(--border)}
-.infobox dt{font-weight:700}
-.infobox dd{margin:0 0 8px 0}
+.infobox .title{
+  font-weight:700;
+  text-align:center;
+  background: rgba(255,255,255,0.02);
+  padding:8px;
+  margin:-12px -12px 10px -12px;
+  border-bottom:1px solid var(--card-border);
+}
 
-/* mobile */
-@media (max-width:900px){
-  .main-grid{grid-template-columns:1fr; padding:12px}
-  .sidebar{height:auto; order:2}
-  .infobox{float:none;margin:0 0 15px 0;width:100%}
-  .site-header input[type="search"]{width:160px}
-}
+/* Monster groups / details (wiki folding blocks) */
 .monster-groups { margin-top: 12px; display:block; gap:12px; }
-.monster-group { border: 1px solid var(--border); border-radius:6px; background: #fff; margin-bottom:12px; overflow:hidden; }
+.monster-group { border: 1px solid var(--card-border); border-radius:8px; background: rgba(255,255,255,0.015); margin-bottom:12px; overflow:hidden; }
 .monster-group summary.monster-group-header {
   display:flex;
   align-items:center;
@@ -150,119 +164,74 @@ body{
   cursor:pointer;
   list-style:none;
   font-weight:700;
-  background: linear-gradient(180deg, #f6f6f6, #fafafa);
-  border-bottom:1px solid var(--border);
+  color:var(--text-primary);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  border-bottom:1px solid rgba(255,255,255,0.01);
 }
-.monster-group summary::-webkit-details-marker { display: none; } /* hide default marker */
-.monster-group .group-title { font-weight:700; color:var(--accent); }
+.monster-group summary::-webkit-details-marker { display: none; }
+.monster-group .group-title { font-weight:700; color:var(--primary); text-transform:uppercase; }
 .monster-group .group-meta { color:var(--muted); font-size:0.95em; }
 .monster-group-body { padding:12px; }
 
-/* Make the inner tables responsive */
-.monster-group-body .wikitable { width:100%; overflow:auto; }
-
-/* Small-screen tweaks */
-@media (max-width:900px){
-  .monster-group summary.monster-group-header { flex-direction:column; align-items:flex-start; gap:6px; }
-  .monster-group .group-meta { font-size:0.9em; }
-}
-/* >>> Ajustes: títulos de elementos plegables en negro y en MAYÚSCULAS */
-.sidebar-summary .sidebar-summary-title,
-.sidebar-summary .sidebar-summary-toggle,
-.category-toggle,
-.category-toggle .cat-toggle-icon,
-.monster-group .group-title {
-  color: #000 !important;               /* color negro */
-  text-transform: uppercase !important; /* mostrar en mayúsculas */
-  font-weight: 700 !important;          /* más contraste/visibilidad */
-  letter-spacing: 0.5px;
-}
-.monster-group .group-meta,
-.sidebar-summary .sidebar-summary-sub {
-  color: #00AAE4 !important;
-  text-transform: uppercase !important;
-}
-/* Search results box */
+/* Search results dropdown (light) */
 .search-results {
-  margin-top: 8px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  max-width: 520px;
-  padding: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  font-size: 14px;
+  margin-top:8px;
+  background: linear-gradient(180deg,#071616, rgba(255,255,255,0.02));
+  border:1px solid var(--card-border);
+  border-radius:8px;
+  max-width:520px;
+  padding:8px;
+  box-shadow: 0 6px 20px rgba(0,255,255,0.03);
+  font-size:14px;
 }
-.search-results ul { list-style:none; margin:0; padding:0; }
-.search-results li { padding:8px 6px; border-bottom:1px solid rgba(0,0,0,0.04); display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.search-results li:last-child{ border-bottom:0; }
-.search-results a.result-title { color: #000; font-weight:700; text-decoration:none; }
-.search-results a.result-title:hover { text-decoration:underline; }
-.search-results .result-links { display:flex; gap:8px; align-items:center; }
-.search-results .result-links a { font-size:13px; color:var(--accent); text-decoration:none; border-radius:4px; padding:4px 8px; background:transparent; }
-.search-results .result-links a.external { background:#f4f7f7; color:#0b6; }
+.search-results a.result-title { color:var(--text-primary); font-weight:700; text-decoration:none; }
 .search-results .no-results { color:var(--muted); padding:8px; }
-@media (max-width:900px){
-  .search-results { max-width: 100%; }
+
+/* Buttons that match the neural look */
+.neural-btn {
+  font-family: var(--font-mono);
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: #071014;
+  padding:10px 18px;
+  border:none;
+  border-radius:999px;
+  font-size:13px;
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease;
 }
-#search { display: none !important; }
-.manual-wrap {
-  white-space: nowrap; /* evita saltos de línea automáticos */
+.neural-btn:hover { transform:translateY(-3px); box-shadow: 0 10px 30px rgba(0,255,255,0.08); }
+
+/* Footer */
+.site-footer{
+  margin-top:40px;
+  padding:24px 18px;
+  color:var(--muted);
+  border-top:1px solid rgba(0,255,255,0.03);
 }
 
-/* Si quieres que en pantallas pequeñas se permita el wrap automático,
-   descomenta la media query o ajústala según prefieras */
-@media (max-width: 700px) {
-  .manual-wrap {
-    white-space: normal; /* opcional: permitir wrap en móviles */
-  }
-}
-.container{
-  max-width:1200px;
-  margin-left:24px;    /* <-- separa del borde izquierdo 24px */
-  margin-right:auto;   /* deja espacio libre a la derecha */
-  padding:0 16px;
-}
-.sidebar-summary,
-.sidebar-summary .sidebar-summary-title,
-.sidebar-summary .sidebar-summary-toggle {
-  cursor: pointer;
+/* Responsive */
+@media (max-width:1000px){
+  .main-grid{ grid-template-columns: 1fr; padding:16px; }
+  .sidebar{ height:auto; order:2; }
+  .infobox{ float:none; width:100%; margin-bottom:12px; }
+  .site-header .container{ flex-wrap:wrap; gap:8px; }
+  .site-header h1{ order: -1; width:100%; text-align:center; margin-bottom:6px; }
 }
 
-/* Asegura también el puntero en el summary dentro de details (por compatibilidad) */
-details.sidebar-details > summary,
-details.categories-details > summary {
-  cursor: pointer;
+/* Small tweak: ensure manual-wrap areas don't break styling badly */
+.manual-wrap { white-space: nowrap; overflow: auto; }
+@media (max-width:700px){
+  .manual-wrap { white-space: normal; }
 }
-.site-header .container {
-  position: relative; /* create positioning context for absolute centering */
-}
-
-/* Target the first h1 inside the header container (the "Ragnarok Online Wiki" title) */
-.site-header .container > h1:first-child {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  white-space: nowrap; /* prevent wrapping the title */
-}
-
-/* Make sure the centered title doesn't block clicks on nearby elements */
-.site-header .container > h1:first-child a {
-  display: inline-block;
-  padding: 0 6px;
-}
-
-/* On small screens, restore normal flow so header items stack without overlap */
-@media (max-width: 900px) {
-  .site-header .container {
-    position: static;
-  }
-  .site-header .container > h1:first-child {
-    position: static;
-    transform: none;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 12px;
-  }
+#neural-bg {
+  position: fixed;
+  inset: 0;                   /* top:0; right:0; bottom:0; left:0; */
+  width: 100%;
+  height: 100%;
+  z-index: 9999;              /* encima de todo (ajusta si necesitas) */
+  pointer-events: none;       /* no bloquea clicks/inputs */
+  opacity: 0.12;              /* controla la visibilidad de la animación */
+  mix-blend-mode: normal;     /* opcional: puedes cambiar a 'screen' u 'overlay' para efectos distintos */
+  transition: opacity .3s ease;
+  will-change: opacity;
 }

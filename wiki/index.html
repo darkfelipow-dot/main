@@ -5,8 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>RoLatamWiki</title>
   <link rel="stylesheet" href="styles.css" />
-</head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+  </head>
 <body>
+<canvas id="neural-bg"></canvas>
   <header class="site-header">
     <div class="container">
       <h1><a href="/main">RoLatam Wiki</a></h1>
@@ -50,14 +54,6 @@
       <ul id="instancias-list" class="category-sublist" hidden>
         <li><a href="#/weekend" data-page="weekend">Weekend</a></li>
         <li><a href="#/friday" data-page="weekend">Friday</a></li>
-      </ul>
-    </li>
-    <li>
-      <button class="category-toggle" aria-expanded="false" aria-controls="calculadora-list">
-        Calculadoras <span class="cat-toggle-icon" aria-hidden="true">▾</span>
-      </button>
-      <ul id="calculadora-list" class="category-sublist" hidden>
-        <li><a href="tong-calc-ro-host" data-page="weekend">Calc de Equip</a></li>
       </ul>
     </li>
 	    <li>
