@@ -223,15 +223,59 @@ body{
 @media (max-width:700px){
   .manual-wrap { white-space: normal; }
 }
-#neural-bg {
-  position: fixed;
-  inset: 0;                   /* top:0; right:0; bottom:0; left:0; */
-  width: 100%;
-  height: 100%;
-  z-index: 9999;              /* encima de todo (ajusta si necesitas) */
-  pointer-events: none;       /* no bloquea clicks/inputs */
-  opacity: 0.12;              /* controla la visibilidad de la animación */
-  mix-blend-mode: normal;     /* opcional: puedes cambiar a 'screen' u 'overlay' para efectos distintos */
-  transition: opacity .3s ease;
-  will-change: opacity;
-}
+        #neural-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+		.glitch {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+            color: var(--text-primary);
+            letter-spacing: 8px;
+            animation: glitch 2s infinite;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--primary);
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--secondary);
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+            0%, 100% { text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 0, 255, 0.5); }
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { clip: rect(42px, 9999px, 44px, 0); transform: translate(0); }
+            50% { clip: rect(12px, 9999px, 59px, 0); transform: translate(-2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { clip: rect(12px, 9999px, 85px, 0); transform: translate(0); }
+            50% { clip: rect(78px, 9999px, 93px, 0); transform: translate(2px, 2px); }
+        }
