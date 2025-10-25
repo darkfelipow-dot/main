@@ -279,3 +279,5 @@ body{
             0%, 100% { clip: rect(12px, 9999px, 85px, 0); transform: translate(0); }
             50% { clip: rect(78px, 9999px, 93px, 0); transform: translate(2px, 2px); }
         }
+a[target="_blank"] { color: #e91e63; }
+a[target="_blank"]:hover { color: #c2185b; }
