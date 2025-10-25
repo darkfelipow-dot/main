@@ -3327,7 +3327,7 @@
       "hit": 419,
       "flee": 516,
       "ai": "MONSTER_TYPE_26",
-      "mvp": 1,
+      "mvp": 0,
       "class": 1,
       "attr": 8,
       "res": 0,
