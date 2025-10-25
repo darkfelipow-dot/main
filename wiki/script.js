@@ -7,7 +7,8 @@
     'prontera': 'pages/prontera.html',
     'weekend': 'pages/weekend.html',
     'friday': 'pages/friday.html',
-    'MalandgoE': 'pages/MalandgoE.html'
+    'MalandgoE': 'pages/MalandgoE.html',
+	'nightmarish-jitterbug': 'pages/nightmarish-jitterbug.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
