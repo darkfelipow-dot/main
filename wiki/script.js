@@ -10,7 +10,7 @@
     'MalandgoE': 'pages/MalandgoE.html',
 	'nightmarish-jitterbug': 'pages/nightmarish-jitterbug.html',
 	'ogh': 'pages/ogh.html',
-	'ogh-Hard': 'pages/ogh-Hard.html'
+	'ogh-hard': 'pages/ogh-hard.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
