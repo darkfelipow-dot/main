@@ -8,7 +8,8 @@
     'weekend': 'pages/weekend.html',
     'friday': 'pages/friday.html',
     'MalandgoE': 'pages/MalandgoE.html',
-	'nightmarish-jitterbug': 'pages/nightmarish-jitterbug.html'
+	'nightmarish-jitterbug': 'pages/nightmarish-jitterbug.html',
+	'ogh': 'pages/ogh.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
