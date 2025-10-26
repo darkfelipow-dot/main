@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Special Pharmacy — Calculadora (Creation: Deadly Potion)</title>
+
+  <!-- Reusar la misma hoja de estilos y fuentes que index.html.
+       Este archivo está pensado para colocarse en /potion/specialpharmacy.html,
+       por eso las rutas a los recursos usan ../ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+  <link href="../tooplate-neural-style.css" rel="stylesheet">
+  <link rel="icon" href="../main/favicon.png">
+  <style>
+    /* Pequeñas adaptaciones locales para el layout del calculador */
+    main { padding: 120px 20px 80px; max-width: 980px; margin: 0 auto; }
+    .calc-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .calc-title { font-family: 'Orbitron', sans-serif; font-size:1.6rem; color:var(--primary); }
+    .calc-grid { display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:18px; }
+    @media (max-width:768px) { .calc-grid { grid-template-columns: 1fr; } }
+    .result { padding:14px; border-radius:10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04); }
+    .breakdown { font-family: monospace; font-size:0.95rem; margin-top:8px; color:var(--text-secondary); }
+    .small { font-size:0.92rem; color:var(--text-secondary); margin-top:8px; }
+    .calc-controls label { display:block; margin-bottom:6px; font-weight:600; }
+    .inline-row { display:flex; gap:8px; align-items:center; }
+    .inline-row input[type="number"] { width:110px; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text-primary); }
+    .btn-inline { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; color:#fff; }
+    .btn-green { background:#28a745; }
+    .btn-purple { background:#6f42c1; }
+  </style>
+</head>
+<body>
+  <!-- Se reutiliza el canvas y el nav si se quiere anidar aquí.
+       Para mantenerlo simple y coherente con index.html, incluimos un botón para volver. -->
+  <canvas id="neural-bg"></canvas>
+
+  <nav id="navbar" style="position:fixed; top:0; width:100%; z-index:999;">
+    <div class="nav-container" style="max-width:1200px; margin:0 auto;">
+      <a href="../index.html" class="logo-container" style="text-decoration:none;">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;">
+          <circle cx="50" cy="20" r="8" fill="none" stroke="#00ffff" stroke-width="2"/>
+          <circle cx="25" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
+          <circle cx="75" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
+          <circle cx="50" cy="80" r="8" fill="none" stroke="#ffff00" stroke-width="2"/>
+          <circle cx="50" cy="50" r="5" fill="#00ffff"/>
+        </svg>
+        <span style="margin-left:10px; color:var(--text-primary); font-family:'Audiowide',sans-serif;">RoLatam Wiki</span>
+      </a>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+        <a href="../index.html" class="neural-btn" style="padding:10px 16px; font-size:0.9rem;">Volver</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="glass-card">
+      <div class="calc-header">
+        <div class="calc-title">Calculadora : Deadly Potion</div>
+        <div style="margin-left:auto; color:var(--text-secondary);">Fórmula: Success Rate (%) = 20 + (DEX × 0.4) + (LUK × 0.2)</div>
+      </div>
+
+      <div class="calc-grid">
+        <!-- Panel de entradas -->
+        <div>
+          <div class="calc-controls">
+            <label for="sp-dex">DEX</label>
+            <div class="inline-row" style="margin-bottom:12px;">
+              <input id="sp-dex" type="range" min="0" max="999" value="50" step="1">
+              <input id="sp-dex-num" type="number" min="0" max="999" value="50">
+            </div>
+
+            <label for="sp-luk">LUK</label>
+            <div class="inline-row" style="margin-bottom:12px;">
+              <input id="sp-luk" type="range" min="0" max="999" value="30" step="1">
+              <input id="sp-luk-num" type="number" min="0" max="999" value="30">
+            </div>
+
+            <div class="small">Resultado crudo limitado a 0%–100%. Valores decimales mostrados con 2 cifras.</div>
+
+            <hr style="margin:14px 0; border-color: rgba(255,255,255,0.04)">
+
+            <label for="sp-target">Tasa objetivo (%)</label>
+            <div class="inline-row">
+              <input id="sp-target" type="number" min="0" max="200" step="0.1" value="80">
+              <button id="sp-need-dex" class="btn-inline btn-green">Calcular DEX</button>
+              <button id="sp-need-luk" class="btn-inline btn-purple">Calcular LUK</button>
+            </div>
+            <div id="sp-needed" class="small" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <!-- Panel de resultado -->
+        <div>
+          <div class="result">
+            <div><strong>Success Rate:</strong> <span id="sp-success" style="font-size:1.25rem;">—</span></div>
+            <div id="sp-breakdown" class="breakdown">—</div>
+            <div id="sp-clamp-note" class="small"></div>
+            <div style="margin-top:12px;">
+              <strong>Explicación:</strong>
+              <div class="small">Tasa = 20 + (DEX × 0.4) + (LUK × 0.2). Si la tasa está fuera del rango 0–100 se mostrará un min~max de 1 o 100.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Reusar script principal (fondo, menú) y añadir el script del calculador al final -->
+  <script src="../tooplate-neural-scripts.js"></script>
+  <script>
+    // Namespaced calculator script — se ejecuta tras carga del DOM
+    (function () {
+      document.addEventListener('DOMContentLoaded', () => {
+        const dexRange = document.getElementById('sp-dex');
+        const dexNum = document.getElementById('sp-dex-num');
+        const lukRange = document.getElementById('sp-luk');
+        const lukNum = document.getElementById('sp-luk-num');
+        const successElem = document.getElementById('sp-success');
+        const breakdownElem = document.getElementById('sp-breakdown');
+        const clampNote = document.getElementById('sp-clamp-note');
+        const targetInput = document.getElementById('sp-target');
+        const needDexBtn = document.getElementById('sp-need-dex');
+        const needLukBtn = document.getElementById('sp-need-luk');
+        const neededOutput = document.getElementById('sp-needed');
+
+        function clamp(v, a=0, b=100){ return Math.max(a, Math.min(b, v)); }
+
+        function calcRate(dex, luk) {
+          const raw = 20 + dex * 0.4 + luk * 0.2;
+          const clamped = clamp(raw, 0, 100);
+          return { raw, clamped };
+        }
+
+        function updateUI() {
+          const dex = Number(dexRange.value);
+          const luk = Number(lukRange.value);
+          dexNum.value = dex;
+          lukNum.value = luk;
+          const { raw, clamped } = calcRate(dex, luk);
+          successElem.textContent = clamped.toFixed(2) + '%';
+          breakdownElem.textContent = `20 + (${dex} × 0.4) + (${luk} × 0.2) = ${raw.toFixed(4)} → ${clamped.toFixed(2)}%`;
+          clampNote.textContent = (raw !== clamped) ? 'Nota: el valor crudo fue limitado a 0%–100%.' : '';
+          neededOutput.textContent = '';
+        }
+
+        function requiredDexForTarget(target, luk) {
+          // target = 20 + dex*0.4 + luk*0.2 => dex = (target - 20 - luk*0.2)/0.4
+          return (target - 20 - luk * 0.2) / 0.4;
+        }
+        function requiredLukForTarget(target, dex) {
+          // target = 20 + dex*0.4 + luk*0.2 => luk = (target - 20 - dex*0.4)/0.2
+          return (target - 20 - dex * 0.4) / 0.2;
+        }
+
+        // Events
+        dexRange.addEventListener('input', updateUI);
+        lukRange.addEventListener('input', updateUI);
+
+        dexNum.addEventListener('change', () => {
+          let v = Number(dexNum.value);
+          if (isNaN(v)) v = 0;
+          v = Math.max(Number(dexRange.min), Math.min(Number(dexRange.max), v));
+          dexRange.value = v;
+          dexNum.value = v;
+          updateUI();
+        });
+
+        lukNum.addEventListener('change', () => {
+          let v = Number(lukNum.value);
+          if (isNaN(v)) v = 0;
+          v = Math.max(Number(lukRange.min), Math.min(Number(lukRange.max), v));
+          lukRange.value = v;
+          lukNum.value = v;
+          updateUI();
+        });
+
+        needDexBtn.addEventListener('click', () => {
+          const target = Number(targetInput.value);
+          const luk = Number(lukRange.value);
+          if (isNaN(target)) { neededOutput.textContent = 'Introduce una tasa objetivo válida.'; return; }
+          const reqDex = requiredDexForTarget(target, luk);
+          let msg = '';
+          if (reqDex > 9999) msg = `Necesitarías DEX ≈ ${reqDex.toFixed(2)} (muy alto).`;
+          else msg = `Con LUK=${luk}, necesitas DEX ≈ ${reqDex.toFixed(2)} para alcanzar ${target}%.`;
+          if (reqDex < 0) msg += ' (negativo → ya superarías la tasa objetivo con DEX=0).';
+          neededOutput.textContent = msg;
+        });
+
+        needLukBtn.addEventListener('click', () => {
+          const target = Number(targetInput.value);
+          const dex = Number(dexRange.value);
+          if (isNaN(target)) { neededOutput.textContent = 'Introduce una tasa objetivo válida.'; return; }
+          const reqLuk = requiredLukForTarget(target, dex);
+          let msg = '';
+          if (reqLuk > 9999) msg = `Necesitarías LUK ≈ ${reqLuk.toFixed(2)} (muy alto).`;
+          else msg = `Con DEX=${dex}, necesitas LUK ≈ ${reqLuk.toFixed(2)} para alcanzar ${target}%.`;
+          if (reqLuk < 0) msg += ' (negativo → ya superarías la tasa objetivo con LUK=0).';
+          neededOutput.textContent = msg;
+        });
+
+        // Init
+        updateUI();
+      });
+    })();
+  </script>
+</body>
+</html>

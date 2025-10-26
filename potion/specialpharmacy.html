@@ -27,6 +27,7 @@
       padding: 18px;
       position: relative;
       z-index: 2; /* ensure content is above the animated canvas */
+      margin-top: 110px; /* leave space for the fixed header */
     }
 
     /* Use the site's glass-card style to match look */
@@ -65,11 +66,48 @@
     @media (max-width:900px){
       .grid { grid-template-columns: 1fr; }
     }
+
+    /* small override so nav's fixed height doesn't overlap content on very small screens */
+    @media (max-width: 480px) {
+      .wrap { margin-top: 90px; }
+    }
   </style>
+
 </head>
 <body>
+
   <!-- neural background canvas (same as index.html). tooplate-neural-style.css sets #neural-bg z-index -1 -->
   <canvas id="neural-bg"></canvas>
+
+  <!-- Header (copied from the site's nav, includes Volver button and mobile toggle to keep main script happy) -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo-container" style="text-decoration:none;">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Neural Network Logo -->
+          <circle cx="50" cy="20" r="8" fill="none" stroke="#00ffff" stroke-width="2"/>
+          <circle cx="25" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
+          <circle cx="75" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
+          <circle cx="50" cy="80" r="8" fill="none" stroke="#ffff00" stroke-width="2"/>
+          <line x1="50" y1="28" x2="25" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.6"/>
+          <line x1="50" y1="28" x2="75" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.6"/>
+          <line x1="25" y1="58" x2="50" y2="72" stroke="#ff00ff" stroke-width="1" opacity="0.6"/>
+          <line x1="75" y1="58" x2="50" y2="72" stroke="#ff00ff" stroke-width="1" opacity="0.6"/>
+          <circle cx="50" cy="50" r="5" fill="#00ffff"/>
+        </svg>
+        <span class="logo-text">RoLatam Wiki</span>
+      </a>
+
+      <div class="mobile-menu-toggle" id="mobile-toggle" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div style="margin-left:12px; display:flex; align-items:center; gap:10px;">
+        <a href="../index.html" class="neural-btn" style="padding:8px 12px; font-size:0.9rem;">Volver</a>
+      </div>
+    </div>
+  </nav>
 
   <div class="wrap">
     <div class="card">
@@ -139,7 +177,7 @@
 
             <div>
               <label for="itemRate">Item Rate <span class="small">(se asigna automáticamente)</span></label>
-              <input id="itemRate" type="number" value="0" step="1" />             
+              <input id="itemRate" type="number" value="0" step="1" />
             </div>
           </div>
 
