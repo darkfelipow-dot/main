@@ -140,7 +140,55 @@
         });
 
         // Form submission
-        document.querySelector('.contact-form').addEventListener('submit', (e) => {
+        const contactForm = document.querySelector('.contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Message sent! (This is a demo)');
+            });
+        }
+
+// Dropdown behavior (calculadora)
+(function () {
+    const dropdown = document.getElementById('calc-dropdown');
+    if (!dropdown) return;
+    const toggle = dropdown.querySelector('.drop-toggle');
+
+    // Hacer toggle en móvil (o pantallas pequeñas)
+    toggle.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
             e.preventDefault();
-            alert('Message sent! (This is a demo)');
-        });
+            dropdown.classList.toggle('open');
+            const expanded = dropdown.classList.contains('open');
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        }
+    });
+
+    // Soporte teclado (Enter / Space)
+    toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            dropdown.classList.toggle('open');
+            const expanded = dropdown.classList.contains('open');
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        }
+    });
+
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dropdown')) {
+            if (dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+
+    // Cerrar al redimensionar cuando volvemos a desktop
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && dropdown.classList.contains('open')) {
+            dropdown.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+})();

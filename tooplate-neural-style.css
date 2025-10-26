@@ -152,11 +152,12 @@ https://www.tooplate.com/view/2139-neural-portfolio
             background: linear-gradient(90deg, var(--primary), transparent);
         }
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 40px;
-        }
+.nav-menu > ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
 
         nav a {
             font-family: 'Audiowide', sans-serif;
@@ -184,6 +185,84 @@ https://www.tooplate.com/view/2139-neural-portfolio
 
         nav ul a:hover::after {
             width: 100%;
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .drop-toggle {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .drop-toggle::after {
+            content: '▾';
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown.open .drop-toggle::after,
+        .dropdown:hover .drop-toggle::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            min-width: 180px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            list-style: none;
+            padding: 10px;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            z-index: 1002;
+        }
+
+        .dropdown-menu li {
+            padding: 6px 0;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.15s ease, color 0.15s ease;
+            font-size: 0.85rem;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(0,255,255,0.06);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        /* Show on hover for desktop */
+        @media (hover: hover) and (pointer: fine) {
+            .dropdown:hover .dropdown-menu {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+        }
+
+        /* Show when .open (used for mobile click) */
+        .dropdown.open .dropdown-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
         }
 
         /* Mobile Menu */
@@ -1031,3 +1110,85 @@ https://www.tooplate.com/view/2139-neural-portfolio
   text-decoration: none; /* quita subrayado */
 }
 .glass-card { cursor: pointer; }
+/* Reemplaza la definición actual de .dropdown-menu y las reglas de hover/open por esto */
+
+.dropdown {
+    position: relative;
+}
+
+/* botón */
+.drop-toggle {
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* indicador de flecha */
+.drop-toggle::after {
+    content: '▾';
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.85rem;
+    transition: transform 0.18s ease;
+}
+
+/* menú: posición justo debajo del toggle, pero ligeramente solapado cuando está oculto */
+.dropdown-menu {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    min-width: 180px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    list-style: none;
+    padding: 10px;
+    z-index: 1002;
+
+    /* estado oculto: subir un poco el menú para solapar el toggle y evitar gap */
+    opacity: 0;
+    transform: translate(-50%, -8px); /* solapa 8px con el toggle */
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+/* estados de elementos dentro */
+.dropdown-menu li { padding: 6px 0; }
+.dropdown-menu a {
+    display: block;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+    font-size: 0.85rem;
+}
+.dropdown-menu a:hover {
+    background: rgba(0,255,255,0.06);
+    color: var(--primary);
+    transform: translateX(4px);
+}
+
+/* Mostrar en hover (desktop) - el transform baja el menú a su posición visible exacta */
+@media (hover: hover) and (pointer: fine) {
+    .dropdown:hover .dropdown-menu {
+        opacity: 1;
+        transform: translate(-50%, 0); /* baja a la posición visible */
+        pointer-events: auto;
+    }
+
+    .dropdown:hover .drop-toggle::after {
+        transform: rotate(180deg);
+    }
+}
+
+/* Mostrar cuando está abierto por JS (móvil) */
+.dropdown.open .dropdown-menu {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+.dropdown.open .drop-toggle::after {
+    transform: rotate(180deg);
+}
