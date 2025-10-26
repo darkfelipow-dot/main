@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora de Creación (Potion/Item)</title>
+
+  <!-- Load same fonts + global site stylesheet so the page shares the exact background -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+  <link href="../tooplate-neural-style.css" rel="stylesheet"> <!-- adjust path if needed -->
+
+  <style>
+    /* Minimal page-specific overrides (do NOT override the global background) */
+    :root {
+      --accent: #2dd4bf; /* keep accent used locally */
+      --muted: #9aa6af;
+    }
+
+    /* Keep layout spacing but let global stylesheet provide background and canvas overlay */
+    html,body { height: 100%; margin: 0; color: var(--text-primary); font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 18px;
+      position: relative;
+      z-index: 2; /* ensure content is above the animated canvas */
+    }
+
+    /* Use the site's glass-card style to match look */
+    .card {
+      /* reuse site's look; keep minimal override so it matches other pages */
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-primary);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    .grid { display: grid; grid-template-columns: 1fr 360px; gap: 14px; align-items: start; margin-top: 12px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+
+    input[type="number"], select, input[type="text"]{
+      width:100%;
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      background: rgba(0,0,0,0.16);
+      color: var(--text-primary);
+      font-size:14px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    .controls{ display:flex; gap:8px; margin-top:10px; }
+    button { background: var(--accent); color:#021115; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+    button.ghost { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); }
+
+    pre { white-space: pre-wrap; word-break: break-word; background: rgba(255,255,255,0.02); padding:10px; border-radius:8px; font-size:13px; color:#dff7f0; }
+
+    @media (max-width:900px){
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- neural background canvas (same as index.html). tooplate-neural-style.css sets #neural-bg z-index -1 -->
+  <canvas id="neural-bg"></canvas>
+
+  <div class="wrap">
+    <div class="card">
+      <h1 style="margin:0 0 8px 0; font-size:20px; color:var(--accent)">Calculadora Special Pharmacy</h1>
+      <div class="muted" style="color:var(--muted)">
+        Fórmula:
+        <br>
+        Creation = INT + (DEX ÷ 2) + LUK + Job_Lv + Random[30,150] + (Base_Lv − 100) + (Potion_Research_Lv × 5) + (Full_Chem_Prot_Lv × Random[4,10])
+        <br>
+        Difficulty = Specific_Value + Item_Rate
+        <br><br>
+        Regla aplicada al fabricar Objetos:
+        <ul>
+          <li>Si A (Creation) ≥ B (Difficulty) + 400 → se crea el máximo de pociones.</li>
+          <li>Si A ≥ B + 300 → se crea (Máx − 3).</li>
+          <li>Si A ≥ B + 100 → se crea (Máx − 4).</li>
+          <li>Si A ≥ B + 1   → se crea (Máx − 5).</li>
+          <li>Si A &lt; B     → se crea (Máx − 6).</li>
+        </ul>
+        El resultado final se genera a ≥ 0 y ≤ Máx por intento.
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <form id="calcForm" onsubmit="return false;">
+          <label for="itemSelect">Objeto a crear</label>
+          <select id="itemSelect" title="Selecciona el objeto (solo nombres, ingredientes ignorados por ahora)">
+            <!-- opciones... -->
+            <option value="Thorn Plant Seed">Thorn Plant Seed</option>
+            <option value="Blood Sucker Plant Seed">Blood Sucker Plant Seed</option>
+            <option value="Bomb Mushroom Spore">Bomb Mushroom Spore</option>
+            <option value="Enriched White PotionZ">Enriched White PotionZ</option>
+            <option value="Vitata500">Vitata500</option>
+            <option value="Enrich Celermine Juice">Enrich Celermine Juice</option>
+            <option value="Cure Free">Cure Free</option>
+            <option value="Concentrated Red Syrup Potion">Concentrated Red Syrup Potion</option>
+            <option value="Concentrated Blue Syrup Potion">Concentrated Blue Syrup Potion</option>
+            <option value="Concentrated Golden Syrup Potion">Concentrated Golden Syrup Potion</option>
+            <option value="Red Herb Activator">Red Herb Activator</option>
+            <option value="Blue Herb Activator">Blue Herb Activator</option>
+            <option value="Golden X Potion">Golden X Potion</option>
+            <option value="Increase HP Potion (Small)">Increase HP Potion (Small)</option>
+            <option value="Increase HP Potion (Medium)">Increase HP Potion (Medium)</option>
+            <option value="Increase HP Potion (Large)">Increase HP Potion (Large)</option>
+            <option value="Increase SP Potion (Small)">Increase SP Potion (Small)</option>
+            <option value="Increase SP Potion (Medium)">Increase SP Potion (Medium)</option>
+            <option value="Increase SP Potion (Large)">Increase SP Potion (Large)</option>
+          </select>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:10px">
+            <div>
+              <label for="levelSelect">Recipe Level (1‑10) → Specific Value y Max Potions</label>
+              <select id="levelSelect">
+                <option value="1">1 — Specific 600 — Max 7</option>
+                <option value="2">2 — Specific 580 — Max 8</option>
+                <option value="3">3 — Specific 560 — Max 8</option>
+                <option value="4">4 — Specific 540 — Max 9</option>
+                <option value="5">5 — Specific 520 — Max 9</option>
+                <option value="6">6 — Specific 500 — Max 10</option>
+                <option value="7">7 — Specific 480 — Max 10</option>
+                <option value="8">8 — Specific 460 — Max 11</option>
+                <option value="9">9 — Specific 440 — Max 11</option>
+                <option value="10">10 — Specific 420 — Max 12</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="itemRate">Item Rate <span class="small">(se asigna automáticamente)</span></label>
+              <input id="itemRate" type="number" value="0" step="1" />             
+            </div>
+          </div>
+
+          <hr style="border:none; margin:12px 0; border-top:1px solid rgba(255,255,255,0.03)">
+
+          <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:8px">
+            <div>
+              <label for="int">INT</label>
+              <input id="int" type="number" value="1" min="0" />
+            </div>
+            <div>
+              <label for="dex">DEX</label>
+              <input id="dex" type="number" value="1" min="0" />
+            </div>
+            <div>
+              <label for="luk">LUK</label>
+              <input id="luk" type="number" value="1" min="0" />
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-top:8px">
+            <div>
+              <label for="jobLv">Job Lv</label>
+              <input id="jobLv" type="number" value="1" min="0" />
+            </div>
+            <div>
+              <label for="baseLv">Base Lv</label>
+              <input id="baseLv" type="number" value="100" min="1" />
+            </div>
+            <div>
+              <label for="potionResearch">Potion Research Lv</label>
+              <input id="potionResearch" type="number" value="0" max="10" />
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:8px; align-items:center">
+            <div style="flex:1">
+              <label for="fullChem">Full Chemical Protection Lv</label>
+              <input id="fullChem" type="number" value="0" max="5" />
+            </div>
+            <div style="width:160px">
+              <label for="trials">N°de Simulaciones</label>
+              <input id="trials" type="number" value="1" min="1" />
+            </div>
+          </div>
+
+          <div class="controls">
+            <button id="runBtn">Calcular probabilidad</button>
+            <button id="quickBtn" class="ghost" type="button">Resultado rápido (1k)</button>
+            <button id="resetBtn" class="ghost" type="button">Limpiar</button>
+          </div>
+
+          <p class="small" style="margin-top:8px">
+            La calculadora simula la parte aleatoria y aplica la regla descrita arriba para determinar cuántas unidades se producen.
+          </p>
+        </form>
+      </div>
+
+      <aside class="card">
+        <h3 style="margin:0 0 8px 0; color:var(--accent)">Salida / Resultados</h3>
+        <div id="results">
+          <div class="small muted">Aún no calculado.</div>
+        </div>
+
+        <hr style="border:none; margin:12px 0; border-top:1px solid rgba(255,255,255,0.03)">
+
+        <h4 style="margin:0 0 8px 0; color:var(--accent)">Tabla Level → Specific Value</h4>
+        <pre>
+Level  Specific Value  Max Potion Possible
+1      600             7
+2      580             8
+3      560             8
+4      540             9
+5      520             9
+6      500             10
+7      480             10
+8      460             11
+9      440             11
+10     420             12
+        </pre>
+      </aside>
+    </div>
+  </div>
+
+  <!-- include the same neural scripts so the canvas animation and navbar helpers run -->
+  <script src="../tooplate-neural-scripts.js"></script> <!-- adjust path if needed -->
+  <!-- keep the calculator script (inline) below or keep your external script. -->
+  <script>
+    // Calculator JS (unchanged) - same code as before (kept minimal here)
+    const N = v => { v = Number(v); return isNaN(v) ? 0 : v; };
+    const LEVEL_TABLE = {1:{specific:600,max:7},2:{specific:580,max:8},3:{specific:560,max:8},4:{specific:540,max:9},5:{specific:520,max:9},6:{specific:500,max:10},7:{specific:480,max:10},8:{specific:460,max:11},9:{specific:440,max:11},10:{specific:420,max:12}};
+
+    // ITEM RATE MAP used to auto-assign itemRate when an object is selected
+    const ITEM_RATE_MAP = {
+      "Thorn Plant Seed": 30,
+      "Blood Sucker Plant Seed": 30,
+      "Bomb Mushroom Spore": 15,
+      "Enriched White PotionZ": 10,
+      "Vitata500": 20,
+      "Enrich Celermine Juice": 30,
+      "Cure Free": 40,
+      "Concentrated Red Syrup Potion": 100,
+      "Concentrated Blue Syrup Potion": 130,
+      "Concentrated Golden Syrup Potion": 150,
+      "Red Herb Activator": 100,
+      "Blue Herb Activator": 100,
+      "Golden X Potion": 145,
+      "Increase HP Potion (Small)": 10,
+      "Increase HP Potion (Medium)": 20,
+      "Increase HP Potion (Large)": 40,
+      "Increase SP Potion (Small)": 10,
+      "Increase SP Potion (Medium)": 15,
+	  "Increase SP Potion (Large)": 20
+      // Increase SP Potion (Large) left without automatic value
+    };
+
+    // DOM references
+    const runBtn = document.getElementById('runBtn');
+    const quickBtn = document.getElementById('quickBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultsEl = document.getElementById('results');
+    const itemSelect = document.getElementById('itemSelect');
+    const itemRateInput = document.getElementById('itemRate');
+    const trialsInput = document.getElementById('trials');
+
+    // Auto-assign Item Rate when user selects an item
+    function updateItemRateFromSelection() {
+      const sel = itemSelect.value;
+      if (Object.prototype.hasOwnProperty.call(ITEM_RATE_MAP, sel)) {
+        const rate = ITEM_RATE_MAP[sel];
+        itemRateInput.value = rate;
+      } else {
+        // default when not found
+        itemRateInput.value = 0;
+      }
+    }
+
+    // attach change listener and initialize on load
+    if (itemSelect && itemRateInput) {
+      itemSelect.addEventListener('change', updateItemRateFromSelection);
+      // set initial value based on the default selected option
+      updateItemRateFromSelection();
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function computeCreationOnce(inputs) {
+      const r1 = randomInt(30,150);
+      const r2 = inputs.fullChem * randomInt(4,10);
+      const creation = inputs.INT + (inputs.DEX / 2) + inputs.LUK + inputs.jobLv + r1 + (inputs.baseLv - 100) + (inputs.potionResearch * 5) + r2;
+      return creation;
+    }
+
+    function computeDifficulty(level, itemRate) {
+      const spec = LEVEL_TABLE[level] ? LEVEL_TABLE[level].specific : 600;
+      return spec + itemRate;
+    }
+
+    function producedFromDiff(creation, difficulty, perSuccessMax) {
+      const diff = creation - difficulty;
+      let produced;
+      if (diff >= 400) produced = perSuccessMax;
+      else if (diff >= 300) produced = perSuccessMax - 3;
+      else if (diff >= 100) produced = perSuccessMax - 4;
+      else if (diff >= 1)   produced = perSuccessMax - 5;
+      else produced = perSuccessMax - 6;
+
+      produced = Math.floor(produced);
+      if (produced < 0) produced = 0;
+      if (produced > perSuccessMax) produced = perSuccessMax;
+      return produced;
+    }
+
+    function montecarlo(inputs, level, itemRate, trials) {
+      const difficulty = computeDifficulty(level, itemRate);
+      let successes = 0;
+      const creations = new Array(trials);
+      const producedPerTrial = new Array(trials).fill(0);
+      const perSuccessMax = LEVEL_TABLE[level] ? LEVEL_TABLE[level].max : 1;
+
+      for (let i=0;i<trials;i++) {
+        const c = computeCreationOnce(inputs);
+        creations[i] = c;
+        const produced = producedFromDiff(c, difficulty, perSuccessMax);
+        producedPerTrial[i] = produced;
+        if (c >= difficulty) successes++;
+      }
+
+      const sorted = creations.slice().sort((a,b)=>a-b);
+      const sum = creations.reduce((a,b)=>a+b,0);
+      const mean = sum / trials;
+      const median = sorted[Math.floor(trials/2)];
+      const p10 = sorted[Math.floor(trials*0.10)];
+      const p90 = sorted[Math.floor(trials*0.90)];
+
+      const totalProduced = producedPerTrial.reduce((a,b)=>a+b,0);
+      const minProducedPossible = successes * 1;
+      const maxProducedPossible = successes * perSuccessMax;
+
+      return {
+        difficulty,
+        trials,
+        successes,
+        successRate: successes / trials * 100,
+        mean, median, min: sorted[0], max: sorted[sorted.length-1],
+        p10, p90,
+        creations,
+        producedPerTrial,
+        totalProduced,
+        producedMinPossible: minProducedPossible,
+        producedMaxPossible: maxProducedPossible,
+        perSuccessMax
+      };
+    }
+
+    function renderResults(res, level) {
+      const maxRecipePossible = LEVEL_TABLE[level] ? LEVEL_TABLE[level].max : '-';
+      const html = `
+        <div>
+          <div><strong>Difficulty (Specific + ItemRate):</strong> ${res.difficulty.toFixed(2)}</div>
+          <div style="margin-top:8px"><strong>Simulaciones:</strong> ${res.trials}</div>
+          <div style="margin-top:8px"><strong>Éxito (Creation ≥ Difficulty):</strong> ${res.successes} / ${res.trials} → <span style="color: ${res.successRate>=50 ? '#7efc9a' : '#ffd275'}; font-weight:700">${res.successRate.toFixed(2)}%</span></div>
+          <div style="margin-top:12px"><strong>Pociones / Objetos producidos (esta simulación)</strong></div>
+          <div class="small" style="margin-top:6px">
+            <strong style="color:#ff6b6b">Total producidas:</strong>
+			<strong style="color:#7efc9a">${res.totalProduced}</strong><br/>
+            Rango teórico (dada la # de éxitos): <strong>${res.producedMinPossible}</strong> (mín) – <strong>${res.producedMaxPossible}</strong> (máx)
+            <br/>Máx por intento (según level): ${maxRecipePossible}
+          </div>
+          <div style="margin-top:12px"><strong>Estadísticos de Creation (estimado)</strong></div>
+          <div class="small" style="margin-top:6px">
+            Media: ${res.mean.toFixed(2)} • Mediana: ${res.median.toFixed(2)} • Mín: ${res.min.toFixed(2)} • Máx: ${res.max.toFixed(2)}
+            <br> P10: ${res.p10.toFixed(2)} • P90: ${res.p90.toFixed(2)}
+          </div>
+          <div style="margin-top:10px" class="small muted">Máx pociones posibles por intento (para este level): ${maxRecipePossible}</div>
+        </div>
+      `;
+      resultsEl.innerHTML = html;
+    }
+
+    function getInputsFromForm() {
+      return {
+        INT: N(document.getElementById('int').value),
+        DEX: N(document.getElementById('dex').value),
+        LUK: N(document.getElementById('luk').value),
+        jobLv: N(document.getElementById('jobLv').value),
+        baseLv: N(document.getElementById('baseLv').value),
+        potionResearch: N(document.getElementById('potionResearch').value),
+        fullChem: N(document.getElementById('fullChem').value)
+      };
+    }
+
+    // Wire buttons and run/reset behavior (existing logic)
+    runBtn.addEventListener('click', () => {
+      runBtn.disabled = true;
+      const rawTrials = N(trialsInput.value);
+      const trials = Math.max(1, Math.min(20000, Math.floor(rawTrials)));
+      trialsInput.value = trials;
+
+      const inputs = getInputsFromForm();
+      const level = Number(document.getElementById('levelSelect').value);
+      const itemRate = N(document.getElementById('itemRate').value);
+
+      setTimeout(()=> {
+        const res = montecarlo(inputs, level, itemRate, trials);
+        renderResults(res, level);
+        runBtn.disabled = false;
+      }, 10);
+    });
+
+    quickBtn.addEventListener('click', () => {
+      const trials = 1000;
+      const inputs = getInputsFromForm();
+      const level = Number(document.getElementById('levelSelect').value);
+      const itemRate = N(document.getElementById('itemRate').value);
+      quickBtn.disabled = true;
+      setTimeout(()=> {
+        const res = montecarlo(inputs, level, itemRate, trials);
+        renderResults(res, level);
+        quickBtn.disabled = false;
+      }, 10);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      document.getElementById('itemSelect').selectedIndex = 0;
+      document.getElementById('levelSelect').value = '1';
+      document.getElementById('itemRate').value = '0';
+      document.getElementById('int').value = '1';
+      document.getElementById('dex').value = '1';
+      document.getElementById('luk').value = '1';
+      document.getElementById('jobLv').value = '1';
+      document.getElementById('baseLv').value = '100';
+      document.getElementById('potionResearch').value = '0';
+      document.getElementById('fullChem').value = '0';
+      document.getElementById('trials').value = '5000';
+      resultsEl.innerHTML = '<div class="small muted">Reiniciado.</div>';
+      // re-run assignment for the default selection
+      updateItemRateFromSelection();
+    });
+
+    // Initialize
+    resultsEl.innerHTML = '<div class="small muted">Configura parámetros y haz click en "Calcular probabilidad".</div>';
+  </script>
+</body>
+</html>

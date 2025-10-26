@@ -9,17 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
     <link href="tooplate-neural-style.css" rel="stylesheet">
 	<link rel="icon" href="main/favicon.png">
-    
-<!--
-
-Tooplate 2139 Neural Portfolio
-
-https://www.tooplate.com/view/2139-neural-portfolio
-
-Free HTML CSS Template
-
--->
-
 </head>
 <body>
     <canvas id="neural-bg"></canvas>
@@ -33,19 +22,11 @@ Free HTML CSS Template
                     <circle cx="25" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
                     <circle cx="75" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
                     <circle cx="50" cy="80" r="8" fill="none" stroke="#ffff00" stroke-width="2"/>
-                    
-                    <!-- Connections -->
                     <line x1="50" y1="28" x2="25" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.6"/>
                     <line x1="50" y1="28" x2="75" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.6"/>
                     <line x1="25" y1="58" x2="50" y2="72" stroke="#ff00ff" stroke-width="1" opacity="0.6"/>
                     <line x1="75" y1="58" x2="50" y2="72" stroke="#ff00ff" stroke-width="1" opacity="0.6"/>
-                    
-                    <!-- Center node -->
                     <circle cx="50" cy="50" r="5" fill="#00ffff"/>
-                    <line x1="50" y1="28" x2="50" y2="45" stroke="#00ffff" stroke-width="1" opacity="0.6"/>
-                    <line x1="50" y1="55" x2="50" y2="72" stroke="#ffff00" stroke-width="1" opacity="0.6"/>
-                    <line x1="33" y1="50" x2="45" y2="50" stroke="#ff00ff" stroke-width="1" opacity="0.6"/>
-                    <line x1="55" y1="50" x2="67" y2="50" stroke="#ff00ff" stroke-width="1" opacity="0.6"/>
                 </svg>
                 <span class="logo-text">RoLatam Wiki</span>
             </a>
@@ -59,7 +40,16 @@ Free HTML CSS Template
             <div class="nav-menu" id="nav-menu">
                 <ul>
                     <li><a href="wiki">Latam Wiki</a></li>
-                    <li><a href="tong-calc-ro-host">CALCULADORA</a></li>
+
+                    <!-- Dropdown: CALCULADORA -->
+                    <li class="dropdown" id="calc-dropdown">
+                        <a href="#" class="drop-toggle" aria-haspopup="true" aria-expanded="false">CALCULADORAS</a>
+                        <ul class="dropdown-menu" role="menu" aria-label="Opciones calculadora">
+                            <li role="none"><a role="menuitem" href="tong-calc-ro-host">CALC DE EQUIPO</a></li>
+                            <li role="none"><a role="menuitem" href="potion/specialpharmacy.html" id="test-link">SPECIAL PHARMACY</a></li>
+                        </ul>
+                    </li>
+
                 </ul>
             </div>
         </div>
@@ -75,37 +65,39 @@ Free HTML CSS Template
     <section id="projects" class="fade-in">
         <h2 class="section-title">PROJECTS</h2>
         <div class="projects-grid">
-		<a class="card-link" href="tong-calc-ro-host">
+            <a class="card-link" href="tong-calc-ro-host">
+                <div class="glass-card project-card">
+                    <h3 style="color: var(--primary);">Calculadora de Equipo</h3>
+                    <p style="color: var(--text-secondary);">Calculadora diseñada para RoLatam con equipo Actual y actualizandose cada semana de updates.</p>
+                </div>
+            </a>
+			<a class="card-link" href="potion/specialpharmacy.html">
             <div class="glass-card project-card">
-               <h3 style="color: var(--primary);">Calculadora de Equipo</h3><li></li>
-                <p style="color: var(--text-secondary);">Calculadora diseñada para RoLatam con equipo Actual y actualizandose cada semana de updates.</p>
+                <h3 style="color: var(--secondary);">Calculadora Special Pharmacy</h3>
+                <p style="color: var(--text-secondary);">Calculadora para simular cantidad de pociones a crear.</p>
             </div>
-			</a>
-            <div class="glass-card project-card">
-                <h3 style="color: var(--secondary);">Calculadora de Skills</h3>
-                <p style="color: var(--text-secondary);">Proximo proyecto calculadora de Skills Pronto</p>
-            </div>
-            <div class="glass-card project-card">
-			<a class="card-link" href="wiki">
-                <h3 style="color: var(--accent);">Wikipedia Español</h3>
-                <p style="color: var(--text-secondary);">Wiki con informacion en español basada en servidor de RoLatam</p>
-            </div>
-			</a>
+            <a class="card-link" href="wiki">
+                <div class="glass-card project-card">
+                    <h3 style="color: var(--accent);">Wikipedia Español</h3>
+                    <p style="color: var(--text-secondary);">Wiki con informacion en español basada en servidor de RoLatam</p>
+                </div>
+            </a>
         </div>
     </section>
+
     <footer>           
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 10px;">
-                    Si Necesitas algo o corregir contactate a Discord  Felipow
-                </p>
-            </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 10px;">
+                Si Necesitas algo o corregir contactate a Discord  Felipow
+            </p>
         </div>
-        
+
         <div class="footer-bottom">
-            <p>&copy; RoLatam Wikipedia Make for Fans</a></p>
+            <p>&copy; RoLatam Wikipedia Make for Fans</p>
         </div>
     </footer>
+
 <script src="tooplate-neural-scripts.js"></script>
 
 </body>
