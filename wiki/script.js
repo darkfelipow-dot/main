@@ -8,10 +8,12 @@
     'weekend': 'pages/weekend.html',
     'friday': 'pages/friday.html',
     'MalandgoE': 'pages/MalandgoE.html',
-	'nightmarish-jitterbug': 'pages/nightmarish-jitterbug.html',
-	'ogh': 'pages/ogh.html',
-	'ogh-hard': 'pages/ogh-hard.html',
-	'temporalboots': 'pages/temporalboots.html'
+    'nightmarish-jitterbug': 'pages/nightmarish-jitterbug.html',
+    'ogh': 'pages/ogh.html',
+    'ogh-hard': 'pages/ogh-hard.html',
+    'temporalboots': 'pages/temporalboots.html',
+    'pharmachy': 'pages/pharmachy.html',
+	'jobquestp2w': 'pages/jobquestp2w.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
@@ -132,6 +134,10 @@
       el.innerHTML = el.innerHTML.replace(/\[\[BR\]\]/g, '<br>');
     });
 
+    // Inicializadores por página
+    // Si la página cargada contiene la calculadora de pharmacy, inicializarla
+    initPharmacyCalculator(contentEl);
+
     // re-run any other per-page initializers here if needed
   }
 
@@ -231,6 +237,11 @@
   window.__ROLA.PAGES = PAGES;
 
 })();
+
+/* -----------------------------------------
+   naviBlock copy-to-clipboard behavior
+   (leave as-is, it enhances .naviBlock clicks)
+   ----------------------------------------- */
 (function() {
   // Selecciona todos los bloques navi
   var blocks = document.querySelectorAll('.naviBlock');
@@ -325,3 +336,110 @@
     }, false);
   });
 })();
+
+/* -----------------------------------------
+   Pharmacy calculator initializer
+   This function will run after the page HTML is injected
+   into the SPA content area. It wires the inputs/buttons.
+   ----------------------------------------- */
+function initPharmacyCalculator(container) {
+  // container: DOM node where the page HTML was injected (pass contentEl)
+  container = container || document;
+  const form = container.querySelector('#calcForm');
+  if (!form) return;
+  // avoid initializing twice
+  if (form.dataset.pharmInit === '1') return;
+  form.dataset.pharmInit = '1';
+
+  // util helpers (local to this page)
+  function N(v){ v = Number(v); return isNaN(v) ? 0 : v; }
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+  function format(v){ return (Math.round(v*10)/10).toFixed(1) + ' %'; }
+
+  // find elements inside container (use querySelector on form to scope)
+  const lpEl = form.querySelector('#lp') || form.querySelector('input[name="lp"]');
+  const phaEl = form.querySelector('#pha') || form.querySelector('input[name="pha"]');
+  const jobEl = form.querySelector('#job') || form.querySelector('input[name="job"]');
+  const intEl = form.querySelector('#int') || form.querySelector('input[name="int"]');
+  const dexEl = form.querySelector('#dex') || form.querySelector('input[name="dex"]');
+  const lukEl = form.querySelector('#luk') || form.querySelector('input[name="luk"]');
+  const homChk = form.querySelector('#homExcluded') || form.querySelector('input[name="homExcluded"]');
+
+  const btnCalc = form.querySelector('#btnCalc');
+  const btnClear = form.querySelector('#btnClear');
+  const resultContent = container.querySelector('#resultContent');
+  const summary = container.querySelector('#summary');
+
+  function calculate(){
+    const lp = N(lpEl.value);
+    const pha = N(phaEl.value);
+    const job = N(jobEl.value);
+    const INT = N(intEl.value);
+    const DEX = N(dexEl.value);
+    const LUK = N(lukEl.value);
+    const homOut = (homChk && homChk.checked) ? 5 : 0;
+
+    const base = lp*1 + pha*3 + job*0.2 + (DEX + LUK + (INT/2))*0.1;
+
+    const adj = {
+      red: 20,
+      alcohol: 10,
+      special: 0,
+      blue: -5,
+      yslim: -7.5,
+      slim: -10
+    };
+
+    let successp = clamp(base + adj.red + homOut, 0, 100);
+    let successalch = clamp(base + adj.alcohol + homOut, 0, 100);
+    let successspecial = clamp(base + adj.special + homOut, 0, 100);
+    let successblue = clamp(base + adj.blue + homOut, 0, 100);
+    let successyslim = clamp(base + adj.yslim + homOut, 0, 100);
+    let successslim = clamp(base + adj.slim + homOut, 0, 100);
+
+    if (resultContent) {
+      resultContent.innerHTML = `
+        <div><strong>Resultados</strong></div>
+        <div style="margin-top:8px;">
+          Red/Yellow/White Potions: <span class="value">${format(successp)}</span><br/>
+          Alcohol: <span class="value">${format(successalch)}</span><br/>
+          Acid / Plant / Marine Sphere / Bottle Grenade: <span class="value">${format(successspecial)}</span><br/>
+          Blue Potions / Aloevera / Anodyne / Red Slim / Embryo / Resist Potions: <span class="value">${format(successblue)}</span><br/>
+          Yellow Slim Potions: <span class="value">${format(successyslim)}</span><br/>
+          White Slim Potion / Glistening Coat: <span class="value">${format(successslim)}</span>
+        </div>
+        <div style="margin-top:10px; font-size:13px; color:var(--muted);">
+          <em>Base calculada:</em> <strong>${(Math.round(base*10)/10).toFixed(1)}</strong> (antes de ajustar por tipo y homunculus).
+        </div>
+      `;
+    }
+
+    if (summary) summary.innerHTML = `Base: ${(Math.round(base*10)/10).toFixed(1)} — Homunculus fuera: ${homOut ? '+'+homOut+'%' : 'no'}`;
+  }
+
+  function clearAll(){
+    if (lpEl) lpEl.value = 0;
+    if (phaEl) phaEl.value = 0;
+    if (jobEl) jobEl.value = 0;
+    if (intEl) intEl.value = 0;
+    if (dexEl) dexEl.value = 0;
+    if (lukEl) lukEl.value = 0;
+    if (homChk) homChk.checked = false;
+    if (resultContent) resultContent.innerHTML = '';
+    if (summary) summary.innerHTML = '';
+  }
+
+  if (btnCalc) btnCalc.addEventListener('click', (e) => { e.preventDefault(); calculate(); });
+  if (btnClear) btnClear.addEventListener('click', (e) => { e.preventDefault(); clearAll(); });
+
+  // allow enter to calculate inside this form
+  form.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      calculate();
+    }
+  });
+
+  // initial clear
+  clearAll();
+}
