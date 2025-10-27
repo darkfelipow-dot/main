@@ -14,7 +14,8 @@
     'temporalboots': 'pages/temporalboots.html',
     'pharmachy': 'pages/pharmachy.html',
 	'jobquestp2w': 'pages/jobquestp2w.html',
-	'htf': 'pages/htf.html'
+	'htf': 'pages/htf.html',
+	'illusionluanda': 'pages/illusionluanda.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
