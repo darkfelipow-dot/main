@@ -13,7 +13,8 @@
     'ogh-hard': 'pages/ogh-hard.html',
     'temporalboots': 'pages/temporalboots.html',
     'pharmachy': 'pages/pharmachy.html',
-	'jobquestp2w': 'pages/jobquestp2w.html'
+	'jobquestp2w': 'pages/jobquestp2w.html',
+	'htf': 'pages/htf.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
