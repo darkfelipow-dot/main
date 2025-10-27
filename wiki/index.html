@@ -4,109 +4,89 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>RoLatamWiki</title>
+
+  <!-- Load the Tooplate "Neural" theme so the background (canvas + overlay) matches index.html -->
+  <link href="tooplate-neural-style.css" rel="stylesheet">
+
+  <!-- Keep the wiki styles after the theme so they continue to style the sidebar/content -->
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="index2-overrides.css">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
-  </head>
+</head>
 <body>
-<canvas id="neural-bg"></canvas>
+  <!-- Canvas used by tooplate-neural-scripts.js for the animated background -->
+  <canvas id="neural-bg"></canvas>
+
+  <!-- Keep your wiki header / sidebar / content intact so SPA behavior is preserved -->
   <header class="site-header">
     <div class="container">
       <h1 class="glitch" data-text="Rolatam Wiki"><a href="/">Rolatam Wiki</a></h1>
-	        <h1><a href="/"><strong>Wiki</strong></a></h1>
+      <h1><a href="/"><strong>Wiki</strong></a></h1>
       <input id="search" type="search" placeholder="Buscar artículos..." aria-label="Buscar artículos">
     </div>
   </header>
+
   <div class="container main-grid">
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-blocks">
-    <!-- Contenido (collapsible, closed by default) -->
-    <details id="sidebar-details" class="sidebar-details">
-      <summary id="sidebar-summary" class="sidebar-summary" aria-controls="sidebar-nav" aria-expanded="false" role="button" tabindex="0">
-        <span class="sidebar-summary-title">Contenido Reciente</span>
-        <span class="sidebar-summary-toggle" aria-hidden="true">▾</span>
-      </summary>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-blocks">
+        <details id="sidebar-details" class="sidebar-details">
+          <summary id="sidebar-summary" class="sidebar-summary" aria-controls="sidebar-nav" aria-expanded="false" role="button" tabindex="0">
+            <span class="sidebar-summary-title">Contenido Reciente</span>
+            <span class="sidebar-summary-toggle" aria-hidden="true">▾</span>
+          </summary>
 
-      <nav id="sidebar-nav" class="sidebar-nav" role="navigation">
-        <ul id="page-list" class="sidebar-page-list">
-          <li><a href="#/ragnarok-online" data-page="ragnarok-online">Ragnarok Online (2025 Renewal)</a></li>
-		   <li><a href="#/jobquestp2w" data-page="jobquestp2w">Cambio de Clase CASH</a></li>
-          <li><a href="#/weekend" data-page="weekend">Instancia Weekend</a></li>
-		  <li><a href="#/friday" data-page="friday">Friday — Instancia</a></li>
-		  <li><a href="#/nightmarish-jitterbug" data-page="nightmarish-jitterbug">Nightmarish Jitterbug</a></li>
-        </ul>
-      </nav>
-    </details>
+          <nav id="sidebar-nav" class="sidebar-nav" role="navigation">
+            <ul id="page-list" class="sidebar-page-list">
+              <li><a href="#/ragnarok-online" data-page="ragnarok-online">Ragnarok Online (2025 Renewal)</a></li>
+              <li><a href="#/jobquestp2w" data-page="jobquestp2w">Cambio de Clase CASH</a></li>
+              <li><a href="#/weekend" data-page="weekend">Instancia Weekend</a></li>
+              <li><a href="#/friday" data-page="friday">Friday — Instancia</a></li>
+              <li><a href="#/nightmarish-jitterbug" data-page="nightmarish-jitterbug">Nightmarish Jitterbug</a></li>
+            </ul>
+          </nav>
+        </details>
 
-    <!-- Categorías (collapsible, closed by default, independent) -->
-    <details id="categories-details" class="categories-details">
-      <summary id="categories-summary" class="sidebar-summary" aria-controls="categories-nav" aria-expanded="false" role="button" tabindex="0">
-        <span class="sidebar-summary-title">Categorías</span>
-        <span class="sidebar-summary-toggle" aria-hidden="true">▾</span>
-      </summary>
+        <details id="categories-details" class="categories-details" style="margin-top:12px;">
+          <summary id="categories-summary" class="sidebar-summary" aria-controls="categories-nav" aria-expanded="false" role="button" tabindex="0">
+            <span class="sidebar-summary-title">Categorías</span>
+            <span class="sidebar-summary-toggle" aria-hidden="true">▾</span>
+          </summary>
 
-      <nav id="categories-nav" class="categories-nav" role="navigation" aria-label="Categorías">
-  <ul class="categories-list">
-    <li>
-      <button class="category-toggle" aria-expanded="false" aria-controls="instancias-list">
-        Instancias <span class="cat-toggle-icon" aria-hidden="true">▾</span>
-      </button>
-      <ul id="instancias-list" class="category-sublist" hidden>
-        <li><a href="#/weekend" data-page="weekend">Weekend</a></li>
-        <li><a href="#/friday" data-page="weekend">Friday</a></li>
-		<li><a href="#/nightmarish-jitterbug" data-page="weekend">Nightmarish Jitterbug</a></li>
-		<li><a href="#/ogh" data-page="weekend">Old Glast Heim Normal</a></li>
-		<li><a href="#/ogh-hard" data-page="weekend">Old Glast Heim Hard</a></li>
-      </ul>
-    </li>
-	    <li>
-      <button class="category-toggle" aria-expanded="false" aria-controls="Encantamientos-list">
-        Encantamientos <span class="cat-toggle-icon" aria-hidden="true">▾</span>
-      </button>
-      <ul id="Encantamientos-list" class="category-sublist" hidden>
-        <li><a href="#/MalandgoE" data-page="weekend">Malandgo</a></li>
-		<li><a href="#/temporalboots" data-page="weekend">Temporal Boots</a></li>
-      </ul>
-    </li>
- <!--     <li>
-      <button class="category-toggle" aria-expanded="false" aria-controls="monstruos-list">
-        Monstruos <span class="cat-toggle-icon" aria-hidden="true">▾</span>
-      </button>
-      <ul id="monstruos-list" class="category-sublist" hidden>
-        <li><a href="#/test" data-page="weekend">test</a></li>
-      </ul>
-    </li>
+          <nav id="categories-nav" class="categories-nav" role="navigation" aria-label="Categorías">
+            <ul class="categories-list">
+              <li>
+                <button class="category-toggle" aria-expanded="false" aria-controls="instancias-list">
+                  Instancias <span class="cat-toggle-icon" aria-hidden="true">▾</span>
+                </button>
+                <ul id="instancias-list" class="category-sublist" hidden>
+                  <li><a href="#/weekend" data-page="weekend">Weekend</a></li>
+                  <li><a href="#/friday" data-page="friday">Friday</a></li>
+                  <li><a href="#/nightmarish-jitterbug" data-page="weekend">Nightmarish Jitterbug</a></li>
+                </ul>
+              </li>
+              <li>
+                <button class="category-toggle" aria-expanded="false" aria-controls="Encantamientos-list">
+                  Encantamientos <span class="cat-toggle-icon" aria-hidden="true">▾</span>
+                </button>
+                <ul id="Encantamientos-list" class="category-sublist" hidden>
+                  <li><a href="#/MalandgoE" data-page="MalandgoE">Malandgo</a></li>
+                  <li><a href="#/temporalboots" data-page="temporalboots">Temporal Boots</a></li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </details>
 
- <!-- ...   <li>
-      <button class="category-toggle" aria-expanded="false" aria-controls="items-list">
-        Items <span class="cat-toggle-icon" aria-hidden="true">▾</span>
-      </button>
-      <ul id="items-list" class="category-sublist" hidden>
-        <li><a href="#/test" data-page="weekend">test</a></li>
-      </ul>
-    </li>
-
-    <li>
-      <button class="category-toggle" aria-expanded="false" aria-controls="mapas-list">
-        Mapas <span class="cat-toggle-icon" aria-hidden="true">▾</span>
-      </button>
-      <ul id="mapas-list" class="category-sublist" hidden>
-        <li><a href="#/test" data-page="weekend">test</a></li>
-      </ul>
-    </li>
-  </ul>--> 
-</nav>
-    </details>
-
-    <footer class="sidebar-foot">
-      <small>Wiki no oficial.</small>
-    </footer>
-  </div>
-</aside>
+        <footer class="sidebar-foot" style="margin-top:12px;">
+          <small>Wiki no oficial.</small>
+        </footer>
+      </div>
+    </aside>
 
     <main id="content" class="content" role="main" tabindex="-1">
-      <!-- El contenido de la página cargada aparece aquí -->
       <article class="page-loading">
         <h2>Bienvenido</h2>
         <p>Abre un artículo desde la columna izquierda o usa la búsqueda.</p>
@@ -114,6 +94,10 @@
     </main>
   </div>
 
+  <!-- Load Tooplate neural script so the canvas animation and helpers run (this is what makes the index.html background) -->
+  <script src="tooplate-neural-scripts.js"></script>
+
+  <!-- Your SPA script (keeps navigation & page-loading behavior) -->
   <script src="script.js"></script>
 </body>
 </html>

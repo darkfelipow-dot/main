@@ -1,0 +1,219 @@
+/* index2-overrides.css
+   Overrides for index2: stacking fixes + smaller sidebar fonts + transparent dropdown backgrounds
+   Include this AFTER styles.css in index2.html:
+   <link rel="stylesheet" href="index2-overrides.css">
+*/
+
+/* ---------- stacking and details behavior (existing fixes) ---------- */
+#sidebar {
+  position: relative;
+  z-index: 4000;
+}
+
+#sidebar .sidebar-blocks,
+#sidebar nav,
+#sidebar .sidebar-nav {
+  position: relative;
+  z-index: 4001;
+}
+
+#sidebar details[open] .sidebar-nav {
+  display: block;
+  max-height: none;
+  overflow: visible;
+  position: relative;
+  z-index: 4002;
+}
+
+#sidebar summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  list-style: none;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 8px;
+}
+
+#sidebar summary::-webkit-details-marker { display: none; }
+#sidebar summary::marker { content: none; }
+
+#sidebar .sidebar-page-list,
+#sidebar .categories-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Prevent theme .dropdown-menu rules from breaking sidebar layout */
+#sidebar .dropdown-menu,
+#sidebar .sidebar-nav .dropdown-menu {
+  position: static !important;
+  transform: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+@media (max-width: 1000px) {
+  #sidebar { z-index: 5000; }
+  #sidebar details[open] .sidebar-nav { position: relative; z-index: 5001; }
+}
+
+/* ---------- New: reduce font sizes and spacing in the sidebar ---------- */
+
+/* Top summary title "Contenido Reciente" */
+#sidebar .sidebar-summary-title {
+  font-size: 1.3rem;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  color: var(--text-primary);
+}
+
+/* Summary toggle chevron */
+#sidebar .sidebar-summary-toggle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Main recent items (the cyan large items) */
+#sidebar .sidebar-page-list,
+#sidebar .sidebar-page-list li {
+  margin: 6px 0;
+}
+
+/* Links in the "Contenido Reciente" list (reduce font and tighten spacing) */
+#sidebar .sidebar-page-list a {
+  display: block;
+  font-family: 'Audiowide', sans-serif;
+  font-size: 12px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  color: var(--primary);
+}
+
+/* Reduce size for category headings (the "Categorías" summary) */
+#sidebar #categories-summary .sidebar-summary-title,
+#sidebar #categories-summary .sidebar-summary-toggle {
+  font-size: 1.3rem;
+}
+
+/* Items inside category sublists (smaller than main list) */
+#sidebar .category-sublist li {
+  margin: 6px 0;
+}
+#sidebar .category-sublist li a {
+  font-family: 'Audiowide', sans-serif;
+  font-size: 12px;
+  line-height: 1.05;
+  letter-spacing: 0.8px;
+  color: var(--primary);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  display: block;
+}
+
+/* Category toggle label (e.g., "Instancias") */
+#sidebar .category-toggle {
+  font-size: 1.2rem;
+  padding: 8px 10px;
+}
+
+/* Make sure small-screen layout keeps smaller font too */
+@media (max-width: 700px) {
+  #sidebar .sidebar-page-list a { font-size: 12px; padding: 6px 6px; }
+  #sidebar .category-sublist li a { font-size: 11px; padding: 4px 8px; }
+  #sidebar .sidebar-summary-title { font-size: 0.92rem; }
+}
+
+/* Accessibility: keep focus outlines readable after size change */
+#sidebar a:focus, #sidebar button:focus, #sidebar summary:focus {
+  outline: 3px solid rgba(0,255,255,0.14);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Ensure the reduced text color/contrast remains visible on the background */
+#sidebar a, #sidebar .sidebar-summary-title, #sidebar .category-toggle {
+  color: var(--primary);
+  text-shadow: 0 0 6px rgba(0,255,255,0.06);
+}
+
+
+/* ---------- NEW: make dropdown backgrounds transparent ---------- */
+
+/* Remove solid black boxes behind the sidebar lists and sublists.
+   This targets common container elements that might provide the dark background
+   so the underlying animated canvas / overlay shows through. */
+#sidebar,
+#sidebar .sidebar-blocks,
+#sidebar .sidebar-nav,
+#sidebar .sidebar-nav > ul,
+#sidebar .sidebar-page-list,
+#sidebar .categories-list,
+#sidebar .category-sublist {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* If the theme uses `.glass-card` or inner panels inside the sidebar, neutralize them */
+#sidebar .glass-card,
+#sidebar .card,
+#sidebar .panel,
+#sidebar .panel-inner {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* The inner list boxes sometimes are given inner padding + background via pseudo elements.
+   Remove those so lists appear on the transparent canvas. */
+#sidebar .sidebar-nav::before,
+#sidebar .sidebar-nav::after,
+#sidebar .sidebar-blocks::before,
+#sidebar .sidebar-blocks::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* If any descendant uses a dark background class (e.g. .bg-dark, .panel-dark), override it */
+#sidebar .bg-dark,
+#sidebar .panel-dark,
+#sidebar .nav-panel,
+#sidebar .nav-panel * {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Ensure individual list items remain readable: keep padding and pointer area */
+#sidebar .sidebar-page-list li a,
+#sidebar .category-sublist li a {
+  padding-left: 6px;
+  padding-right: 6px;
+  display: block;
+  color: var(--primary);
+}
+
+/* If you prefer a slight translucency instead of full transparency, change the value here:
+   e.g. background: rgba(0,0,0,0.25) !important;
+   But user requested fully transparent, so we set transparent above. */
+
+/* Small-screen safety: ensure dropdowns still visible above nav */
+@media (max-width: 1000px) {
+  #sidebar { z-index: 6000; }
+  #sidebar .sidebar-nav, #sidebar details[open] .sidebar-nav { z-index: 6001; }
+}
