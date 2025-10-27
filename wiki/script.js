@@ -15,7 +15,8 @@
     'pharmachy': 'pages/pharmachy.html',
 	'jobquestp2w': 'pages/jobquestp2w.html',
 	'htf': 'pages/htf.html',
-	'illusionluanda': 'pages/illusionluanda.html'
+	'illusionluanda': 'pages/illusionluanda.html',
+	'roastturkey': 'pages/roastturkey.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
