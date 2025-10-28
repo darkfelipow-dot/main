@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora Rune Mastery — Ragnarok (Simulador)</title>
+
+  <!-- Reutiliza el estilo "neural" que compartiste -->
+  <link href="tooplate-neural-style.css" rel="stylesheet">
+
+  <style>
+    /* Pequeñas adaptaciones para la calculadora */
+    .wrap { max-width:1100px; margin:32px auto; padding:18px; position:relative; z-index:2; margin-top:110px; }
+    .card { border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.04); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow:0 20px 40px rgba(0,0,0,0.4); }
+    .grid { display:grid; grid-template-columns:1fr 360px; gap:14px; align-items:start; margin-top:12px; }
+    label{display:block; font-size:13px; color:var(--text-secondary); margin-bottom:6px;}
+    input[type="number"], select { width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.16); color:var(--text-primary); font-size:14px; }
+    .controls{ display:flex; gap:8px; margin-top:10px; }
+    .muted{ color:var(--text-secondary); font-size:13px; }
+    pre { white-space:pre-wrap; background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; font-size:13px; color:#dff7f0; }
+    .big{ font-size:28px; font-weight:700; color:var(--primary); }
+    .breakdown{margin-top:10px; font-size:13px; color:var(--text-secondary); line-height:1.5}
+    /* colored percentage */
+    .chance-green { color: #7efc9a; font-weight:700; }
+    .chance-orange { color: #ffd275; font-weight:700; }
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} .wrap{margin-top:90px} }
+  </style>
+</head>
+<body>
+
+  <!-- Background canvas y nav reutilizando scripts de la plantilla -->
+  <canvas id="neural-bg"></canvas>
+
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo-container" style="text-decoration:none;">
+        <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="20" r="8" fill="none" stroke="#00ffff" stroke-width="2"/>
+          <circle cx="25" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
+          <circle cx="75" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
+          <circle cx="50" cy="80" r="8" fill="none" stroke="#ffff00" stroke-width="2"/>
+          <circle cx="50" cy="50" r="5" fill="#00ffff"/>
+        </svg>
+        <span class="logo-text">Rune Calculator</span>
+      </a>
+
+      <div class="mobile-menu-toggle" id="mobile-toggle" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+
+      <div style="margin-left:12px; display:flex; align-items:center; gap:10px;">
+        <a href="/" class="neural-btn" style="padding:8px 12px; font-size:0.9rem;">Inicio</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <section class="card" aria-labelledby="title">
+      <h1 id="title" style="margin:0 0 8px 0; font-size:20px;">Calculadora Rune Mastery — Chance determinístico</h1>
+      <div class="muted">
+        Se calcula la probabilidad final y determinística de éxito para crear una runa (sin Monte Carlo ni randomizaciones).
+        Success Rate = Base_Success_Rate + (DEX ÷ 30 + LUK ÷ 10 + JobLv ÷ 10) + Runestone_Bonus − Rune_Rank
+        <br><br>
+        El valor se muestra siempre como porcentaje final (entre 1% y 100%).
+      </div>
+    </section>
+
+    <div class="grid" role="form" aria-label="Formulario calculadora Rune Mastery">
+      <div class="card">
+        <form id="runeForm" onsubmit="return false;">
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
+            <div>
+              <label for="skillLv">Rune Mastery Level</label>
+              <select id="skillLv">
+                <option value="1">1 — Base 32%</option>
+                <option value="2">2 — Base 34%</option>
+                <option value="3">3 — Base 36%</option>
+                <option value="4">4 — Base 38%</option>
+                <option value="5">5 — Base 40%</option>
+                <option value="6">6 — Base 42%</option>
+                <option value="7">7 — Base 44%</option>
+                <option value="8">8 — Base 46%</option>
+                <option value="9">9 — Base 48%</option>
+                <option value="10">10 — Base 50%</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="runestoneGrade">Runestone Grade (bonus)</label>
+              <select id="runestoneGrade">
+                <option value="General">General (+4%)</option>
+                <option value="Quality">Quality (+8%)</option>
+                <option value="Rare">Rare (+15%)</option>
+                <option value="Ancient">Ancient (+30%)</option>
+                <option value="Mystic">Mystic (+60%)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px;">
+            <div>
+              <label for="dex">DEX</label>
+              <input id="dex" type="number" value="0" min="0">
+            </div>
+            <div>
+              <label for="luk">LUK</label>
+              <input id="luk" type="number" value="0" min="0">
+            </div>
+            <div>
+              <label for="jobLv">Job Lv</label>
+              <input id="jobLv" type="number" value="1" min="1" max="70">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:10px;">
+            <div>
+              <label for="runeRank">Rune Rank (penaliza)</label>
+              <select id="runeRank">
+                <option value="C">C (-5%)</option>
+                <option value="B">B (-10%)</option>
+                <option value="A">A (-15%)</option>
+                <option value="S">S (-20%)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="clamp">Opciones</label>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <label class="muted"><input id="clamp" type="checkbox" checked> Limitar resultado entre 1% y 100%</label>
+              </div>
+            </div>
+          </div>
+
+          <hr style="border:none; margin:12px 0; border-top:1px solid rgba(255,255,255,0.03)">
+
+          <!-- El número de simulaciones ahora es siempre 1; el campo se muestra pero está deshabilitado -->
+          <div style="display:flex; gap:8px; align-items:center;">
+            <div style="flex:1">
+              <label for="trials">N° de simulaciones (forzado a)</label>
+              <input id="trials" type="number" value="1" min="1" max="1" disabled>
+            </div>
+          </div>
+
+          <div class="controls" style="margin-top:12px;">
+            <button id="runBtn" class="neural-btn">Calcular Chance</button>
+            <button id="resetBtn" type="button" class="neural-btn" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text-secondary);">Restablecer</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="card" aria-live="polite">
+        <h3 style="margin:0 0 8px 0;">Resultados</h3>
+        <div id="resultMain">
+          <div class="muted">Aún no calculado.</div>
+        </div>
+
+        <hr style="border:none; margin:12px 0; border-top:1px solid rgba(255,255,255,0.03)">
+
+        <h4 style="margin:0 0 8px 0;">Explicación y desglose</h4>
+        <div id="explainBox" class="muted" style="font-size:13px;margin-bottom:8px;">
+          Aquí aparecerá el desglose (base, stats, runestone, penalidad) junto al porcentaje final coloreado.
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Reutiliza tus scripts de fondo / UI -->
+  <script src="tooplate-neural-scripts.js"></script>
+
+  <script>
+    // Datos tomados del HTML de iRO Wiki que indicaste (base rates, runestone bonuses, rune ranks)
+    const BASE_RATES = {1:32,2:34,3:36,4:38,5:40,6:42,7:44,8:46,9:48,10:50};
+    const RUNESTONE_BONUSES = { General:4, Quality:8, Rare:15, Ancient:30, Mystic:60 };
+    const RUNE_RANK_PENALTIES = { C:5, B:10, A:15, S:20 }; // valores absolutos para restar
+
+    // DOM
+    const skillLvEl = document.getElementById('skillLv');
+    const runestoneGradeEl = document.getElementById('runestoneGrade');
+    const runeRankEl = document.getElementById('runeRank');
+    const dexEl = document.getElementById('dex');
+    const lukEl = document.getElementById('luk');
+    const jobLvEl = document.getElementById('jobLv');
+    const clampEl = document.getElementById('clamp');
+    const trialsEl = document.getElementById('trials');
+
+    const runBtn = document.getElementById('runBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const resultMain = document.getElementById('resultMain');
+    const explainBox = document.getElementById('explainBox');
+
+    function N(v){ v = Number(v); return isNaN(v) ? 0 : v; }
+
+    function computeSuccessChance(params){
+      // Fórmula: Base + (DEX/30 + LUK/10 + JobLv/10) + Runestone_Bonus - Rune_Rank
+      const base = BASE_RATES[params.skillLv] || 0;
+      const statComponent = (params.DEX/30) + (params.LUK/10) + (params.JobLv/10);
+      const runestone = RUNESTONE_BONUSES[params.runestoneGrade] || 0;
+      const runePenalty = RUNE_RANK_PENALTIES[params.runeRank] || 0;
+      // final raw
+      let raw = base + statComponent + runestone - runePenalty;
+      return { raw, base, statComponent, runestone, runePenalty };
+    }
+
+    function clampPercent(x){
+      if (clampEl.checked){
+        if (x > 100) return 100;
+        if (x < 1) return 1;
+      }
+      return x;
+    }
+
+    // Render determinístico (sin Monte Carlo)
+    function renderDeterministicResult(info, params){
+      const finalChance = clampPercent(info.raw);
+      // color: >=50 green, else orange
+      const cssClass = finalChance >= 50 ? 'chance-green' : 'chance-orange';
+      const html = `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>Chance calculada (determinística):</strong></div>
+            <div class="${cssClass}" style="font-size:30px;">${finalChance.toFixed(2)}%</div>
+          </div>
+
+          <div class="breakdown" style="margin-top:12px;">
+            <div><strong>Base (skill lvl ${params.skillLv}):</strong> ${info.base}%</div>
+            <div><strong>Componente stats:</strong> ${info.statComponent.toFixed(4)} (DEX/30 + LUK/10 + JobLv/10)</div>
+            <div><strong>Runestone bonus:</strong> +${info.runestone}%</div>
+            <div><strong>Rune rank penalty:</strong> -${info.runePenalty}%</div>
+            <div style="margin-top:8px;"><strong>Raw (sin clamp):</strong> ${info.raw.toFixed(4)}%</div>
+          </div>
+        </div>
+      `;
+      resultMain.innerHTML = html;
+
+      // explicación textual
+      explainBox.innerHTML = `
+        Resultado calculado en base a estadisticas principales y nivel de JOB . es recomendable incrementar en mayor medida la LUK ya que se beneficia aun mas en el resultado FINAL.
+      `;
+    }
+
+    // Wiring UI
+    function gatherParams(){
+      return {
+        skillLv: Number(skillLvEl.value),
+        runestoneGrade: runestoneGradeEl.value,
+        runeRank: runeRankEl.value,
+        DEX: N(dexEl.value),
+        LUK: N(lukEl.value),
+        JobLv: N(jobLvEl.value)
+      };
+    }
+
+    runBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      runBtn.disabled = true;
+      const params = gatherParams();
+      // always single deterministic calculation
+      const info = computeSuccessChance(params);
+      renderDeterministicResult(info, params);
+      runBtn.disabled = false;
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      skillLvEl.value = '10';
+      runestoneGradeEl.value = 'General';
+      runeRankEl.value = 'C';
+      dexEl.value = '100';
+      lukEl.value = '0';
+      jobLvEl.value = '99';
+      clampEl.checked = true;
+      trialsEl.value = '1';
+      resultMain.innerHTML = '<div class="muted">Reiniciado. Configure parámetros y pulse "Calcular Chance".</div>';
+      explainBox.innerHTML = '';
+    });
+
+    // inicialización
+    resultMain.innerHTML = '<div class="muted">Configura parámetros y pulsa "Calcular Chance" para obtener el porcentaje final (determinístico).</div>';
+    explainBox.innerHTML = '';
+  </script>
+</body>
+</html>
