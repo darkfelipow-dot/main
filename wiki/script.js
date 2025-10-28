@@ -25,6 +25,62 @@
   const searchInput = document.getElementById('search');
   const pageListEl = document.getElementById('page-list') || document.querySelector('.sidebar ul');
 
+  // ---- Background toggle: persist and apply ----
+  const TOGGLE_KEY = 'rolatam:neuralEnabled';
+  const bgToggleBtn = document.getElementById('toggle-bg');
+
+  function readPref() {
+    const v = localStorage.getItem(TOGGLE_KEY);
+    if (v === null) return true; // default enabled
+    return v === '1';
+  }
+
+  function writePref(enabled) {
+    localStorage.setItem(TOGGLE_KEY, enabled ? '1' : '0');
+  }
+
+  function updateToggleUI(enabled) {
+    if (!bgToggleBtn) return;
+    bgToggleBtn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+    bgToggleBtn.textContent = enabled ? 'Fondo: On' : 'Fondo: Off';
+  }
+
+  function applyNeuralEnabled(enabled) {
+    // toggle CSS class (main visual effect)
+    document.body.classList.toggle('no-neural-bg', !enabled);
+    // call the animation control API exposed by tooplate-neural-scripts.js (if available)
+    if (window.neuralControl && typeof window.neuralControl.setEnabled === 'function') {
+      try { window.neuralControl.setEnabled(enabled); } catch (e) { /* ignore */ }
+    }
+    updateToggleUI(enabled);
+    writePref(enabled);
+  }
+
+  // initialize toggle from stored preference (run ASAP)
+  try {
+    const initialEnabled = readPref();
+    updateToggleUI(initialEnabled);
+    // apply after a tick; if tooplate script hasn't attached API yet, it will be okay:
+    // we still toggle body class for immediate visual effect
+    applyNeuralEnabled(initialEnabled);
+  } catch (e) {
+    // ignore storage errors
+  }
+
+  if (bgToggleBtn) {
+    bgToggleBtn.addEventListener('click', (e) => {
+      const current = (bgToggleBtn.getAttribute('aria-pressed') === 'true');
+      applyNeuralEnabled(!current);
+    });
+    // keyboard accessibility
+    bgToggleBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        bgToggleBtn.click();
+      }
+    });
+  }
+
   // ---- SPA loader ----
   function loadPageFromHash() {
     const hash = location.hash.replace(/^#\/?/, '');
