@@ -12,7 +12,7 @@
     /* Pequeñas adaptaciones para la calculadora */
     .wrap { max-width:1100px; margin:32px auto; padding:18px; position:relative; z-index:2; margin-top:110px; }
     .card { border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.04); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow:0 20px 40px rgba(0,0,0,0.4); }
-    .grid { display:grid; grid-template-columns:1fr 360px; gap:14px; align-items:start; margin-top:12px; }
+    .grid { display:grid; grid-template-columns:1fr 420px; gap:14px; align-items:start; margin-top:12px; }
     label{display:block; font-size:13px; color:var(--text-secondary); margin-bottom:6px;}
     input[type="number"], select { width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.16); color:var(--text-primary); font-size:14px; }
     .controls{ display:flex; gap:8px; margin-top:10px; }
@@ -23,6 +23,13 @@
     /* colored percentage */
     .chance-green { color: #7efc9a; font-weight:700; }
     .chance-orange { color: #ffd275; font-weight:700; }
+    /* Rune table styles */
+    .rune-table { width:100%; border-collapse:collapse; margin-top:8px; }
+    .rune-table th, .rune-table td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.04); text-align:left; font-size:13px; }
+    .rune-table th { color:var(--primary); font-weight:700; text-transform:uppercase; font-size:12px; letter-spacing:1px; }
+    .rune-rank { font-weight:700; text-align:center; width:60px; }
+    .rune-skill { color:var(--primary); text-decoration:underline; cursor:default; }
+    .table-wrap { max-height:600px; overflow:auto; padding-right:6px; }
     @media (max-width:900px){ .grid{grid-template-columns:1fr} .wrap{margin-top:90px} }
   </style>
 </head>
@@ -33,7 +40,7 @@
 
   <nav id="navbar">
     <div class="nav-container">
-      <a href="#" class="logo-container" style="text-decoration:none;">
+      <a href="/" class="logo-container" style="text-decoration:none;">
         <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="20" r="8" fill="none" stroke="#00ffff" stroke-width="2"/>
           <circle cx="25" cy="50" r="8" fill="none" stroke="#ff00ff" stroke-width="2"/>
@@ -156,10 +163,73 @@
 
         <hr style="border:none; margin:12px 0; border-top:1px solid rgba(255,255,255,0.03)">
 
-        <h4 style="margin:0 0 8px 0;">Explicación y desglose</h4>
-        <div id="explainBox" class="muted" style="font-size:13px;margin-bottom:8px;">
-          Aquí aparecerá el desglose (base, stats, runestone, penalidad) junto al porcentaje final coloreado.
+        <h4 style="margin:0 0 8px 0;">Rune list — siempre visible</h4>
+
+        <!-- Tabla siempre visible con Runestone - Skill - Rank -->
+        <div class="table-wrap" aria-hidden="false">
+          <table class="rune-table" id="runeTable" role="table" aria-label="Listado de runestones y skills">
+            <thead>
+              <tr>
+                <th>Runestone</th>
+                <th>Skill</th>
+                <th class="rune-rank">Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Turisus Runestone</td>
+                <td class="rune-skill">Giant Growth</td>
+                <td class="rune-rank">C</td>
+              </tr>
+              <tr>
+                <td>Isia Runestone</td>
+                <td class="rune-skill">Vitality</td>
+                <td class="rune-rank">B</td>
+              </tr>
+              <tr>
+                <td>Pertz Runestone</td>
+                <td class="rune-skill">Storm Blast</td>
+                <td class="rune-rank">B</td>
+              </tr>
+              <tr>
+                <td>Hagalas Runestone</td>
+                <td class="rune-skill">Skin of Stone</td>
+                <td class="rune-rank">C</td>
+              </tr>
+              <tr>
+                <td>Asir Runestone</td>
+                <td class="rune-skill">Determination</td>
+                <td class="rune-rank">C</td>
+              </tr>
+              <tr>
+                <td>Urj Runestone</td>
+                <td class="rune-skill">Abundance</td>
+                <td class="rune-rank">A</td>
+              </tr>
+              <tr>
+                <td>Rhydo Runestone</td>
+                <td class="rune-skill">Crushing Strike</td>
+                <td class="rune-rank">C</td>
+              </tr>
+              <tr>
+                <td>Nosiege Runestone</td>
+                <td class="rune-skill">Refresh</td>
+                <td class="rune-rank">A</td>
+              </tr>
+              <tr>
+                <td>Verkana Runestone</td>
+                <td class="rune-skill">Millenium Shield</td>
+                <td class="rune-rank">S</td>
+              </tr>
+              <tr>
+                <td>Lux Anima Runestone</td>
+                <td class="rune-skill">Lux Anima</td>
+                <td class="rune-rank">S</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
       </aside>
     </div>
   </div>
@@ -187,7 +257,7 @@
     const resetBtn = document.getElementById('resetBtn');
 
     const resultMain = document.getElementById('resultMain');
-    const explainBox = document.getElementById('explainBox');
+    const runeTable = document.getElementById('runeTable'); // tabla estática, siempre visible
 
     function N(v){ v = Number(v); return isNaN(v) ? 0 : v; }
 
@@ -232,11 +302,6 @@
         </div>
       `;
       resultMain.innerHTML = html;
-
-      // explicación textual
-      explainBox.innerHTML = `
-        Resultado calculado en base a estadisticas principales y nivel de JOB . es recomendable incrementar en mayor medida la LUK ya que se beneficia aun mas en el resultado FINAL.
-      `;
     }
 
     // Wiring UI
@@ -265,18 +330,17 @@
       skillLvEl.value = '10';
       runestoneGradeEl.value = 'General';
       runeRankEl.value = 'C';
-      dexEl.value = '100';
+      dexEl.value = '0';
       lukEl.value = '0';
-      jobLvEl.value = '99';
+      jobLvEl.value = '1';
       clampEl.checked = true;
       trialsEl.value = '1';
       resultMain.innerHTML = '<div class="muted">Reiniciado. Configure parámetros y pulse "Calcular Chance".</div>';
-      explainBox.innerHTML = '';
+      // La tabla de runes permanece siempre visible — no la limpiamos.
     });
 
     // inicialización
     resultMain.innerHTML = '<div class="muted">Configura parámetros y pulsa "Calcular Chance" para obtener el porcentaje final (determinístico).</div>';
-    explainBox.innerHTML = '';
   </script>
 </body>
 </html>
