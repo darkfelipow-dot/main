@@ -16,7 +16,8 @@
 	'jobquestp2w': 'pages/jobquestp2w.html',
 	'htf': 'pages/htf.html',
 	'illusionluanda': 'pages/illusionluanda.html',
-	'roastturkey': 'pages/roastturkey.html'
+	'roastturkey': 'pages/roastturkey.html',
+	'OvalArtifact': 'pages/OvalArtifact.html'
   };
 
   // ---- Elements (graceful: some pages may not have all nodes) ----
