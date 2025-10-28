@@ -26,6 +26,8 @@
       <h1 class="glitch" data-text="Rolatam Wiki"><a href="/">Rolatam Wiki</a></h1>
       <h1><a href="/"><strong>Wiki</strong></a></h1>
       <input id="search" type="search" placeholder="Buscar artículos..." aria-label="Buscar artículos">
+      <!-- Toggle botón para alternar fondo animado -->
+      <button id="toggle-bg" class="neural-btn" aria-pressed="true" title="Alternar fondo animado">Fondo: On</button>
     </div>
   </header>
 
@@ -65,9 +67,9 @@
                   <li><a href="#/weekend" data-page="weekend">Weekend</a></li>
                   <li><a href="#/friday" data-page="friday">Friday</a></li>
                   <li><a href="#/nightmarish-jitterbug" data-page="weekend">Nightmarish Jitterbug</a></li>
-				  <li><a href="#/htf" data-page="nightmarish-jitterbug">Horror Toy Factory</a></li>
-				  <li><a href="#/ogh" data-page="nightmarish-jitterbug">Old Glast Heim</a></li>
-				  <li><a href="#/ogh-hard" data-page="ogh-hard">Old Glast Heim Hard</a></li>
+                  <li><a href="#/htf" data-page="nightmarish-jitterbug">Horror Toy Factory</a></li>
+                  <li><a href="#/ogh" data-page="nightmarish-jitterbug">Old Glast Heim</a></li>
+                  <li><a href="#/ogh-hard" data-page="ogh-hard">Old Glast Heim Hard</a></li>
                 </ul>
               </li>
               <li>
@@ -79,28 +81,29 @@
                   <li><a href="#/temporalboots" data-page="temporalboots">Temporal Boots</a></li>
                 </ul>
               </li>
-			     <li>
-                <button class="category-toggle" aria-expanded="false" aria-controls="Illusion Dungeon">
+              <li>
+                <!-- Corregido: id sin espacios para evitar problemas con getElementById/CSS selectors -->
+                <button class="category-toggle" aria-expanded="false" aria-controls="Illusion-Dungeon">
                   Illusion Dungeon <span class="cat-toggle-icon" aria-hidden="true">▾</span>
                 </button>
-                <ul id="Illusion Dungeon" class="category-sublist" hidden>
+                <ul id="Illusion-Dungeon" class="category-sublist" hidden>
                   <li><a href="#/illusionluanda" data-page="illusionluanda">Illusion of Luanda</a></li>
                 </ul>
               </li>
-			  			     <li>
+              <li>
                 <button class="category-toggle" aria-expanded="false" aria-controls="roastturkey">
                   EVENTOS <span class="cat-toggle-icon" aria-hidden="true">▾</span>
                 </button>
                 <ul id="roastturkey" class="category-sublist" hidden>
                   <li><a href="#/roastturkey" data-page="roastturkey">Harvest Festival</a></li>
                 </ul>
-              </li>		  
-			  <li>
+              </li>
+              <li>
                 <button class="category-toggle" aria-expanded="false" aria-controls="OvalArtifact">
                   OTROS <span class="cat-toggle-icon" aria-hidden="true">▾</span>
                 </button>
                 <ul id="OvalArtifact" class="category-sublist" hidden>
-                  <li><a href="#/OvalArtifact" data-page="roastturkey">Oval Artifact</a></li>
+                  <li><a href="#/OvalArtifact" data-page="OvalArtifact">Oval Artifact</a></li>
                 </ul>
               </li>
             </ul>
