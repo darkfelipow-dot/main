@@ -37,7 +37,7 @@
       "element": 80,
       "scale": 2,
       "race": 0,
-      "magicDefense": 5,
+      "magicDefense": 444,
       "hit": 315,
       "flee": 307,
       "ai": "MONSTER_TYPE_17",
