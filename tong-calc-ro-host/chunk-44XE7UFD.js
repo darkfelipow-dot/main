@@ -28426,27 +28426,11 @@ var ZT = {
             isMatk: !0,
             element: _.Ghost,
             hit: 2,
-              formula: (t) => {
-                  let { model: n, skillLevel: r } = t;
-                  const level = Number(n?.level || 0);
-                  const skill = Number(r || 0);
-
-                  // cálculo base del daño
-                  let damage = (1200 + skill * 600) * (level / 100);
-
-                  // según lo indicado, la clave MVP es i.isMVP — soportamos que el monster esté en t.i
-                  const monster = t.i || t.target || t.monster || t.selectedMonster || {};
-
-                  // detección simple de MVP usando la clave i.isMVP
-                  const isMvp = !!monster.isMVP;
-
-                  // aplicar reducción del 99.9% SOLO si es MVP (uso la misma constante de tu ejemplo)
-                  if (isMvp) {
-                      damage *= 0.0016;
-                  }
-
-                  return damage;
-              },
+            formula: (t) => {
+              let { model: n, skillLevel: r, status: i } = t,
+                s = n.level;
+              return (1e3 + r * 200 + i.totalInt) * (s / 100);
+            },
           },
           {
             name: "Chain Lightning",
@@ -33635,7 +33619,7 @@ var b8 = {
               return (50 + r * 80) * (i / 100);
             },
           },
-          {
+                    {
             name: "Cross Impact",
             label: "Cross Impact Lv5",
             value: "Cross Impact==5",
@@ -33652,27 +33636,11 @@ var b8 = {
             baseCriPercentage: 0.5,
             criDmgPercentage: 0.5,
             hit: 7,
-              formula: (t) => {
-                  let { model: model, skillLevel: skillLevel } = t;
-                  const level = Number(model?.level || 0);
-                  const skill = Number(skillLevel || 0);
-
-                  // cálculo base del daño
-                  let damage = (1400 + skill * 150) * (level / 100);
-
-                  // según lo indicado, la clave MVP es i.isMVP — soportamos que el monster esté en t.i
-                  const monster = t.i || t.target || t.monster || t.selectedMonster || {};
-
-                  // detección simple de MVP usando la clave i.isMVP
-                  const isMvp = !!monster.isMVP;
-
-                  // aplicar reducción del 99.9% SOLO si es MVP
-                  if (isMvp) {
-                      damage *= 0.0016; // dejar 0.1% del daño original => reducción 99.9%
-                  }
-
-                  return damage;
-              },
+            formula: (t) => {
+              let { model: n, skillLevel: r } = t,
+                i = n.level;
+              return (1400 + r * 150) * (i / 100);
+            },
           },
           {
             label: "Counter Slash Lv10",
